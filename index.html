@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>20-Week Hyper-Anabolic Recomposition Protocol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* CSS Variables for Color and Spacing */
+    :root{
+      --bg: #080808;
+      --panel: rgba(22, 22, 22, 0.7); /* Slightly transparent for glass */
+      --panel-2: rgba(26, 26, 26, 0.7); /* Slightly transparent for glass */
+      --ink: #E0E0E0;
+      --muted:#9aa0a6;
+      --line:#2A2A2A;
+      --line-2:#333;
+      --accent:#FFC300; /* Gold */
+      --info:#00E5FF; /* Cyan */
+      --danger:#E53935; /* Red */
+      --radius: 12px; /* Increased radius for glass effect */
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Softer, deeper shadow */
+      --backdrop-filter: blur(10px) saturate(180%); /* Glass effect */
+      --border-glass: 1px solid rgba(255, 255, 255, 0.125);
+    }
+
+    /* Base Styles */
+    html,body{height:100%}
+    body{
+      font-family: 'Roboto', sans-serif;
+      margin:0;
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.7;
+      letter-spacing:.2px;
+      font-weight: 400;
+    }
+    .container{
+      max-width:1100px;
+      margin:40px auto;
+      background:var(--panel);
+      padding:36px 28px;
+      border:var(--border-glass); /* Glass border */
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
+      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
+    }
+
+    /* Typography */
+    h1{
+      font-family:'Roboto Mono', monospace;
+      color:var(--accent);
+      font-size: clamp(1.9rem, 2.6vw, 2.6rem);
+      text-align:center;
+      text-transform:uppercase;
+      font-weight:700;
+      letter-spacing:2px;
+      margin:0 0 8px;
+    }
+    h2{
+      color:var(--info); /* Cyan for major section headings */
+      font-size:1.25rem;
+      margin:28px 0 12px;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(255, 255, 255, 0.1); /* Lighter border for glass */
+      text-transform:uppercase;
+      font-weight:700;
+      letter-spacing:.5px;
+    }
+    h3{
+      font-size:1rem;
+      margin:22px 0 12px;
+      color:var(--accent);
+      font-weight:600;
+      padding-bottom:6px;
+      border-bottom:1px dashed rgba(255, 255, 255, 0.08); /* Lighter border for glass */
+    }
+    .muted{color:var(--muted)}
+    .data-label{
+      font-family:'Roboto Mono', monospace;
+      color:var(--info);
+      font-weight:600;
+    }
+
+    /* PURE CSS TAB SYSTEM */
+    .tab-container {
+        display: flex;
+        flex-direction: column;
+        margin-top: 18px;
+    }
+
+    .tab-labels {
+        display: flex;
+        gap: 0;
+        background: var(--panel-2); /* Use panel-2 for tab background */
+        border: var(--border-glass); /* Glass border */
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-bottom: 22px;
+        backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
+        -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
+    }
+
+    .tab-input {
+        display: none; /* Hide radio inputs */
+    }
+
+    .tab-label {
+        flex: 1 1 0;
+        padding: 14px 10px;
+        background: none;
+        border: 0;
+        color: #cfcfcf;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: .8px;
+        cursor: pointer;
+        border-right: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for glass */
+        transition: background .25s, color .25s;
+    }
+    .tab-label:last-child { border-right: 0; }
+    .tab-label:hover { background: rgba(45, 45, 45, 0.5); color: var(--accent); } /* Hover with transparency */
+
+    /* The core logic: When an input is checked, style its corresponding label */
+    .tab-input:checked + .tab-label {
+        background: var(--panel); /* Active tab uses panel background */
+        color: var(--accent);
+        position: relative;
+    }
+    .tab-input:checked + .tab-label::after {
+        content: "";
+        position: absolute; inset: auto 0 -2px 0; height: 2px; background: var(--accent);
+    }
+
+    /* Hide all content panels by default */
+    .tab-content { display: none; padding: 10px 0; }
+
+    /* Show the panel that is a sibling of the checked input */
+    #tab-1:checked ~ #content-1,
+    #tab-2:checked ~ #content-2,
+    #tab-3:checked ~ #content-3,
+    #tab-4:checked ~ #content-4 {
+        display: block;
+    }
+
+    /* Divider */
+    .divider{
+      height:1px;
+      border:0;
+      background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+      margin: 12px 0 20px;
+      opacity:.9;
+    }
+
+    /* Boxes */
+    .color-code-box{
+      padding:20px;
+      border-radius:var(--radius);
+      background:var(--panel-2); /* Use panel-2 for box background */
+      border:var(--border-glass); /* Glass border */
+      margin-bottom:24px;
+      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
+      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
+    }
+    /* Color indicators remain solid for clarity */
+    .training{ box-shadow: inset 4px 0 0 var(--accent); }
+    .nutrition{ box-shadow: inset 4px 0 0 var(--info); }
+    .compounds{ box-shadow: inset 4px 0 0 var(--danger); }
+
+    /* Lists */
+    ul{ list-style:none; padding-left:0; margin:0; }
+    ul li{ position:relative; padding-left:20px; margin-bottom:10px;}
+    ul li::before{
+      content:"•";
+      position:absolute; left:0; top:0;
+      color:var(--accent);
+      font-weight:700; font-size:1.1em; line-height:1.1;
+    }
+
+    /* Grid */
+    .phase-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap:18px;
+      margin-top:10px;
+    }
+
+    /* Tables */
+    .table-wrap{
+      overflow-x:auto;
+      border:var(--border-glass); /* Glass border */
+      border-radius:var(--radius);
+      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
+      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size:.95rem;
+      min-width:700px; /* allows horizontal scroll on small screens */
+    }
+    th, td{
+      padding:12px 14px;
+      text-align:left;
+      border-bottom:1px solid rgba(255, 255, 255, 0.08); /* Lighter border for glass */
+    }
+    th{
+      background: rgba(17, 17, 17, 0.7); /* Transparent background for glass look */
+      color:var(--accent);
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+    }
+    tr:nth-child(even){ background: rgba(31, 31, 31, 0.5); } /* Transparent for glass */
+    tr:hover{ background: rgba(42, 42, 42, 0.7); } /* Transparent for glass */
+
+    /* Footer line (retained for structure, but empty) */
+    .footer{
+      text-align:center;
+      margin-top:32px;
+      color:var(--muted);
+      border-top:1px solid var(--line-2);
+      padding-top:16px;
+      font-size:.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width:768px){
+      .container{ padding:22px 16px; margin:20px auto; }
+      h1{ letter-spacing:1px }
+      .tab-labels { flex-wrap: wrap; }
+      .tab-label { width: 50%; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+      .tab-label:last-child { border-bottom: none; } /* Fix for last label */
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>20-Week Hyper-Anabolic Protocol</h1>
+
+    <!-- PURE CSS TAB IMPLEMENTATION --><div class="tab-container">
+        <!-- Input Radios for State Management --><input type="radio" id="tab-1" name="tab-group" class="tab-input" checked>
+        <input type="radio" id="tab-2" name="tab-group" class="tab-input">
+        <input type="radio" id="tab-3" name="tab-group" class="tab-input">
+        <input type="radio" id="tab-4" name="tab-group" class="tab-input">
+
+        <!-- Labels/Buttons --><div class="tab-labels">
+            <label for="tab-1" class="tab-label">Overview</label>
+            <label for="tab-2" class="tab-label">Training</label>
+            <label for="tab-3" class="tab-label">Pharmacology</label>
+            <label for="tab-4" class="tab-label">Diet</label>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- 1. Overview Content --><section id="content-1" class="tab-content">
+          <div class="color-code-box compounds">
+            <h2 style="text-align: center;">Mission Objectives: Recomposition & Regrowth</h2>
+            <p class="muted" style="text-align:center; margin-bottom:16px;">
+              This protocol is engineered to aggressively leverage <strong>myonuclei retention</strong> (muscle memory) over 20 weeks, converting stored energy into high-quality muscle fiber.
+            </p>
+
+            <div class="phase-grid">
+              <div>
+                <h3>Critical Risks & Monitoring</h3>
+                <p style="color:var(--danger); font-weight:700; margin:0 0 6px;">Zero side effects are not guaranteed.</p>
+                <ul>
+                  <li><strong>CVS Load:</strong> High volume and compound usage demand constant blood pressure/lipid monitoring.</li>
+                  <li><strong>Tissue Integrity:</strong> Tendons/joints must be protected. High-rep warm-ups and <strong>BPC-157</strong> are mandatory.</li>
+                  <li><strong>Bloodwork:</strong> Critical monitoring every <span class="data-label">4–6 weeks</span> to guide protocol adjustments.</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Performance Goals</h3>
+                <ul>
+                  <li><strong>Primary Objective:</strong> Achieve significant <span class="data-label">body recomposition</span> (aggressive fat loss with maximal muscle gain).</li>
+                  <li><strong>Weakness Eradication:</strong> Systematically eliminate the arm weakness via high-frequency training.</li>
+                  <li><strong>Initial Target:</strong> Transition from <span class="data-label">205 lb</span> to a lean, conditioned <span class="data-label">215–225 lb</span> by Week 20.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line-2);">
+              <h3 style="color:var(--info);">Protocol Phase Architecture</h3>
+              <ul>
+                <li><strong>Phase 1 (Weeks 1–4):</strong> High volume, lower intensity, tissue stabilization.</li>
+                <li><strong>Phase 2 (Weeks 5–12):</strong> Increased load, PPL ×2, Nandrolone initiated for joint support.</li>
+                <li><strong>Phase 3 (Weeks 13–20):</strong> Body-part split, RPE 9–10, maximal caloric/compound saturation.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Training Content --><section id="content-2" class="tab-content">
+          <div class="color-code-box training">
+            <h2>Training Protocol Overload</h2>
+            <p style="color:var(--accent); font-weight:700; text-transform:uppercase; margin:0 0 10px;">Primary Focus: Progressive Overload & High-Frequency Arms</p>
+
+            <div class="phase-grid">
+              <div>
+                <h3>Phase 1: Re-Awakening</h3>
+                <p style="font-weight:700; margin:0 0 6px;">Weeks 1–4</p>
+                <ul>
+                  <li><strong>Frequency:</strong> <span class="data-label">6 days on / 1 day off</span></li>
+                  <li><strong>Intensity:</strong> <span class="data-label">RPE 7</span> (≈3 reps in reserve)</li>
+                  <li><strong>Reps:</strong> <span class="data-label">12–20</span> (joint conditioning / capillary density)</li>
+                  <li><strong>Split:</strong> Full-body / Upper–Lower hybrid</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Phase 2: Intensity Drive</h3>
+                <p style="font-weight:700; margin:0 0 6px;">Weeks 5–12</p>
+                <ul>
+                  <li><strong>Frequency:</strong> <span class="data-label">6 days on / 1 day off</span></li>
+                  <li><strong>Intensity:</strong> <span class="data-label">RPE 8–9</span> (1–2 reps in reserve)</li>
+                  <li><strong>Reps:</strong> <span class="data-label">8–12</span> (primary hypertrophy)</li>
+                  <li><strong>Split:</strong> PPL ×2</li>
+                  <li><strong>Technique:</strong> Introduce <span class="data-label">BFR</span> for arms</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Phase 3: Peak Overload</h3>
+                <p style="font-weight:700; margin:0 0 6px;">Weeks 13–20</p>
+                <ul>
+                  <li><strong>Frequency:</strong> <span class="data-label">5 days on / 2 days off</span></li>
+                  <li><strong>Intensity:</strong> <span class="data-label">RPE 9–10</span> (final sets to failure)</li>
+                  <li><strong>Reps:</strong> <span class="data-label">6–12</span> (strength & size)</li>
+                  <li><strong>Split:</strong> Body-part split (prioritize recovery)</li>
+                  <li><strong>Technique:</strong> Giant sets, forced reps, heavy negatives</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3 style="margin-top: 22px;">Sample Workout: Phase 2 — Pull Day</h3>
+            <ul>
+              <li>Heavy T-Bar Row (4 × 8–10)</li>
+              <li>Chest-Supported Row (4 × 10–12)</li>
+              <li>Weighted Chins (4 × 8–12)</li>
+              <li>Face Pulls (3 × 15)</li>
+              <li>Biceps: 1 set of 100-rep Cable Curls (<strong>rest-pause</strong>)</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 3. Pharmacology Content --><section id="content-3" class="tab-content">
+          <div class="color-code-box compounds">
+            <h2>Compound Protocol</h2>
+            <p style="color:var(--danger); font-weight:700; text-transform:uppercase; margin:0 0 14px;">EOD Injection Schedule (adjust by bloodwork only)</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Compound</th>
+                    <th>Weekly Dose</th>
+                    <th>Phase 1 (Weeks 1–4)</th>
+                    <th>Phase 2 (Weeks 5–12)</th>
+                    <th>Phase 3 (Weeks 13–20)</th>
+                    <th>Rationale</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Compound">Testosterone (E/C)</td>
+                    <td data-label="Weekly Dose"><span class="data-label">200 mg</span></td>
+                    <td>200 mg</td>
+                    <td>200 mg</td>
+                    <td>200 mg</td>
+                    <td>TRT base</td>
+                  </tr>
+                  <tr>
+                    <td data-label="Compound">Primobolan</td>
+                    <td data-label="Weekly Dose"><span class="data-label">600 mg</span></td>
+                    <td>400 mg</td>
+                    <td>600 mg</td>
+                    <td>600 mg</td>
+                    <td>Clean anabolism / recomp</td>
+                  </tr>
+                  <tr>
+                    <td data-label="Compound">Nandrolone Decanoate</td>
+                    <td data-label="Weekly Dose"><span class="data-label">500 mg</span></td>
+                    <td>0 mg</td>
+                    <td>400 mg</td>
+                    <td>500 mg</td>
+                    <td>Joint support</td>
+                  </tr>
+                  <tr>
+                    <td data-label="Compound">BPC-157 (Peptide)</td>
+                    <td data-label="Weekly Dose"><span class="data-label">500 µg daily</span></td>
+                    <td>Daily</td>
+                    <td>As needed</td>
+                    <td>As needed</td>
+                    <td>Proactive tissue repair</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Diet Content --><section id="content-4" class="tab-content">
+          <div class="color-code-box nutrition">
+            <h2>Nutrition & Recovery Strategy</h2>
+            <p style="color:var(--info); font-weight:700; text-transform:uppercase; margin:0 0 10px;">Precision Carb Cycling for Hypertrophy & Fat Loss</p>
+
+            <div class="phase-grid">
+              <div>
+                <h3>Macro Constants</h3>
+                <ul>
+                  <li><strong>Protein:</strong> <span class="data-label">308 g minimum</span> (≈1.5 g/lb)</li>
+                  <li><strong>Sleep:</strong> <span class="data-label">9 hours</span></li>
+                  <li><strong>Meal Prep:</strong> Non-negotiable for adherence</li>
+                </ul>
+                <h3>Supplementation</h3>
+                <ul>
+                  <li><strong>Creatine:</strong> 5 g daily</li>
+                  <li><strong>Intra-Workout:</strong> EAAs + fast carbs (high days)</li>
+                  <li><strong>Post-Workout:</strong> Protein isolate + <span class="data-label">75–100 g HGC</span> (high days)</li>
+                  <li><strong>Omega-3s:</strong> 4–6 g EPA/DHA daily</li>
+                </ul>
+              </div>
+
+              <div style="grid-column: span 2;">
+                <h3>Carb Cycling Summary</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Phase</th>
+                        <th>Day Type</th>
+                        <th>Carbs (C)</th>
+                        <th>Fat (F)</th>
+                        <th>Calorie Goal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td rowspan="2">Phase 1 (Weeks 1–4)</td>
+                        <td>High (Training)</td>
+                        <td>250 g</td>
+                        <td>65 g</td>
+                        <td><span class="data-label">~2,900 kcal</span> (slight surplus)</td>
+                      </tr>
+                      <tr>
+                        <td>Low (Rest)</td>
+                        <td>50 g</td>
+                        <td>80 g</td>
+                        <td><span class="data-label">~2,200 kcal</span> (moderate deficit)</td>
+                      </tr>
+                       <tr>
+                        <td rowspan="2">Phase 2 (Weeks 5–12)</td>
+                        <td>High (Training)</td>
+                        <td>375 g</td>
+                        <td>75 g</td>
+                        <td><span class="data-label">~3,500 kcal</span> (solid surplus)</td>
+                      </tr>
+                      <tr>
+                        <td>Low (Rest)</td>
+                        <td>75 g</td>
+                        <td>90 g</td>
+                        <td><span class="data-label">~2,500 kcal</span> (slight deficit)</td>
+                      </tr>
+                      <tr>
+                        <td rowspan="2">Phase 3 (Weeks 13–20)</td>
+                        <td>High (Training)</td>
+                        <td>500 g</td>
+                        <td>80 g</td>
+                        <td><span class="data-label">~4,100 kcal</span> (high anabolic surplus)</td>
+                      </tr>
+                      <tr>
+                        <td>Low (Rest)</td>
+                        <td>100 g</td>
+                        <td>70 g</td>
+                        <td><span class="data-label">~2,300 kcal</span> (sharpening deficit)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+    </div>
+    <!-- END PURE CSS TAB IMPLEMENTATION --></main>
+</body>
+</html>
