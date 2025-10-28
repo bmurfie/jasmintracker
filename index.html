@@ -15,7 +15,7 @@
                 <span id="dark-mode-icon">🌙</span>
             </button>
             <div class="app-title">Jasmin's Workout Tracker</div>
-            <div class="app-subtitle">High Intensity Training • Mentzer Protocol</div>
+            <div class="app-subtitle" id="session-timer-display">00:00:00</div>
         </div>
 
         <div class="tab-bar">
@@ -343,118 +343,14 @@
 
         <div id="plan-tab" class="tab-content">
             <div class="plan-section">
-                <div class="content-card">
+                <button class="nav-btn nav-btn-secondary" style="width: 100%; margin-bottom: 20px;" onclick="togglePlanEditMode()">
+                    ⚙️ Edit/Save Workout Plan
+                </button>
+                
+                <div class="content-card" id="plan-workout-program">
                     <div class="content-card-title">7-Day Training Split</div>
-                    
-                    <div class="plan-subsection">
-                        <h4>Day 1: Quad Focus (Monday)</h4>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Leg Extension <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
+                    <div id="plan-split-content">
                         </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Hack Squat or Leg Press <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Bulgarian Split Squat <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Sissy Squat <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 2: Hamstring Stretch (Tuesday)</h4>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Lying Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Romanian Deadlift <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Seated Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Glute-Ham Raise <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 3: Rest Day (Wednesday)</h4>
-                        <div class="rest-day">Active Recovery: Light stretching, yoga, or walking</div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 4: Glute Focus (Thursday)</h4>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Hip Thrust <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Smith Machine Reverse Lunge <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Cable Kickback <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Abductor Machine <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 5: Upper Body Push/Pull (Friday)</h4>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Chest Press <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Cable Row <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Shoulder Press <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Bicep Curl <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 6: Abs & Core (Saturday)</h4>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Plank Hold <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × 60s</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Russian Twists <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Hanging Leg Raises <span class="badge-isolation">ISOLATION</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                        <div class="exercise-list-item">
-                            <span class="exercise-list-name">Mountain Climbers <span class="badge-compound">COMPOUND</span></span>
-                            <span class="exercise-list-sets">1 × Failure</span>
-                        </div>
-                    </div>
-
-                    <div class="plan-subsection">
-                        <h4>Day 7: Rest Day (Sunday)</h4>
-                        <div class="rest-day">Full Recovery: Focus on nutrition, sleep, and hydration</div>
-                    </div>
                 </div>
 
                 <div class="content-card">
