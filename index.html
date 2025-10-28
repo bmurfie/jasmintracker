@@ -1,489 +1,1489 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>20-Week Hyper-Anabolic Recomposition Protocol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    /* CSS Variables for Color and Spacing */
-    :root{
-      --bg: #080808;
-      --panel: rgba(22, 22, 22, 0.7); /* Slightly transparent for glass */
-      --panel-2: rgba(26, 26, 26, 0.7); /* Slightly transparent for glass */
-      --ink: #E0E0E0;
-      --muted:#9aa0a6;
-      --line:#2A2A2A;
-      --line-2:#333;
-      --accent:#FFC300; /* Gold */
-      --info:#00E5FF; /* Cyan */
-      --danger:#E53935; /* Red */
-      --radius: 12px; /* Increased radius for glass effect */
-      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Softer, deeper shadow */
-      --backdrop-filter: blur(10px) saturate(180%); /* Glass effect */
-      --border-glass: 1px solid rgba(255, 255, 255, 0.125);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>Jasmin's HIT Workout Tracker ✨</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Chewy&display=swap');
+        
+        /* Enhanced Color System */
+        :root {
+            --pink-hot: #FF1493;
+            --pink-deep: #E91E63;
+            --pink-medium: #F06292;
+            --pink-light: #FFB6D9;
+            --pink-baby: #FFE4F0;
+            --pink-pale: #FFF5FA;
+            --purple: #A855F7;
+            --green: #10B981;
+            --red: #EF4444;
+            --orange: #F59E0B;
+            --text-dark: #2D1B2E;
+            --text-medium: #6B4C6D;
+            --text-light: #9E7BA0;
+        }
 
-    /* Base Styles */
-    html,body{height:100%}
-    body{
-      font-family: 'Roboto', sans-serif;
-      margin:0;
-      color:var(--ink);
-      background:var(--bg);
-      line-height:1.7;
-      letter-spacing:.2px;
-      font-weight: 400;
-    }
-    .container{
-      max-width:1100px;
-      margin:40px auto;
-      background:var(--panel);
-      padding:36px 28px;
-      border:var(--border-glass); /* Glass border */
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
-      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
-    }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FFF0F7 0%, #FFE0ED 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    /* Typography */
-    h1{
-      font-family:'Roboto Mono', monospace;
-      color:var(--accent);
-      font-size: clamp(1.9rem, 2.6vw, 2.6rem);
-      text-align:center;
-      text-transform:uppercase;
-      font-weight:700;
-      letter-spacing:2px;
-      margin:0 0 8px;
-    }
-    h2{
-      color:var(--info); /* Cyan for major section headings */
-      font-size:1.25rem;
-      margin:28px 0 12px;
-      padding-bottom:10px;
-      border-bottom:1px solid rgba(255, 255, 255, 0.1); /* Lighter border for glass */
-      text-transform:uppercase;
-      font-weight:700;
-      letter-spacing:.5px;
-    }
-    h3{
-      font-size:1rem;
-      margin:22px 0 12px;
-      color:var(--accent);
-      font-weight:600;
-      padding-bottom:6px;
-      border-bottom:1px dashed rgba(255, 255, 255, 0.08); /* Lighter border for glass */
-    }
-    .muted{color:var(--muted)}
-    .data-label{
-      font-family:'Roboto Mono', monospace;
-      color:var(--info);
-      font-weight:600;
-    }
+        /* App Container */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.15);
+        }
 
-    /* PURE CSS TAB SYSTEM */
-    .tab-container {
-        display: flex;
-        flex-direction: column;
-        margin-top: 18px;
-    }
+        /* Top Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            color: white;
+            padding: 20px 20px 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .app-title {
+            font-family: 'Chewy', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .app-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            font-weight: 600;
+        }
 
-    .tab-labels {
-        display: flex;
-        gap: 0;
-        background: var(--panel-2); /* Use panel-2 for tab background */
-        border: var(--border-glass); /* Glass border */
-        border-radius: var(--radius);
-        overflow: hidden;
-        margin-bottom: 22px;
-        backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
-        -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
-    }
+        /* Tab Navigation */
+        .tab-bar {
+            display: flex;
+            background: white;
+            margin-top: -40px;
+            margin-left: 20px;
+            margin-right: 20px;
+            border-radius: 20px;
+            padding: 6px;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.15);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-medium);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
+        }
+        
+        .tab-btn:not(.active):hover {
+            background: var(--pink-pale);
+            color: var(--pink-deep);
+        }
 
-    .tab-input {
-        display: none; /* Hide radio inputs */
-    }
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .tab-label {
-        flex: 1 1 0;
-        padding: 14px 10px;
-        background: none;
-        border: 0;
-        color: #cfcfcf;
-        text-align: center;
-        text-transform: uppercase;
-        font-weight: 700;
-        letter-spacing: .8px;
-        cursor: pointer;
-        border-right: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for glass */
-        transition: background .25s, color .25s;
-    }
-    .tab-label:last-child { border-right: 0; }
-    .tab-label:hover { background: rgba(45, 45, 45, 0.5); color: var(--accent); } /* Hover with transparency */
+        /* Workout Tracker View */
+        .workout-controls {
+            padding: 20px;
+            display: flex;
+            gap: 12px;
+            background: var(--pink-pale);
+            border-bottom: 2px solid var(--pink-light);
+        }
+        
+        .workout-controls select,
+        .workout-controls input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--pink-light);
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            background: white;
+            color: var(--text-dark);
+        }
 
-    /* The core logic: When an input is checked, style its corresponding label */
-    .tab-input:checked + .tab-label {
-        background: var(--panel); /* Active tab uses panel background */
-        color: var(--accent);
-        position: relative;
-    }
-    .tab-input:checked + .tab-label::after {
-        content: "";
-        position: absolute; inset: auto 0 -2px 0; height: 2px; background: var(--accent);
-    }
+        /* Progress Ring */
+        .progress-section {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        
+        .progress-ring .bg-circle {
+            stroke: var(--pink-pale);
+        }
+        
+        .progress-ring .progress-circle {
+            stroke: url(#progressGradient);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .progress-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        
+        .progress-sublabel {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
 
-    /* Hide all content panels by default */
-    .tab-content { display: none; padding: 10px 0; }
+        /* Exercise Card - Focus Mode */
+        .exercise-card {
+            margin: 20px;
+            background: linear-gradient(to bottom right, white, var(--pink-pale));
+            border: 3px solid var(--pink-light);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(255, 20, 147, 0.12);
+        }
+        
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .exercise-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        
+        .exercise-type-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .badge-compound {
+            background: linear-gradient(135deg, #FFE4F0, #FFB6D9);
+            color: var(--pink-hot);
+        }
+        
+        .badge-isolation {
+            background: linear-gradient(135deg, #F3E8FF, #E9D5FF);
+            color: var(--purple);
+        }
+        
+        .exercise-target {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+        }
 
-    /* Show the panel that is a sibling of the checked input */
-    #tab-1:checked ~ #content-1,
-    #tab-2:checked ~ #content-2,
-    #tab-3:checked ~ #content-3,
-    #tab-4:checked ~ #content-4 {
-        display: block;
-    }
+        /* PR Display */
+        .pr-display {
+            background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+            border: 2px solid #6EE7B7;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .pr-display-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--green);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .pr-display-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 12px;
+        }
+        
+        .pr-stat {
+            text-align: center;
+        }
+        
+        .pr-stat-label {
+            font-size: 0.7rem;
+            color: #059669;
+            margin-bottom: 2px;
+        }
+        
+        .pr-stat-value {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #065F46;
+        }
 
-    /* Divider */
-    .divider{
-      height:1px;
-      border:0;
-      background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
-      margin: 12px 0 20px;
-      opacity:.9;
-    }
+        /* Set Input */
+        .set-input {
+            background: white;
+            border: 2px solid var(--pink-light);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .set-input.completed {
+            background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+            border-color: #6EE7B7;
+        }
+        
+        .set-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-medium);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .set-fields {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .set-field {
+            flex: 1;
+        }
+        
+        .set-field label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        
+        .set-field input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--pink-light);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            background: white;
+            color: var(--text-dark);
+        }
+        
+        .set-field input:focus {
+            outline: none;
+            border-color: var(--pink-hot);
+            box-shadow: 0 0 0 4px rgba(255, 20, 147, 0.1);
+        }
+        
+        .set-completed input {
+            background: white;
+            color: var(--green);
+            border-color: #6EE7B7;
+        }
+        
+        .set-multiplier {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--pink-light);
+        }
 
-    /* Boxes */
-    .color-code-box{
-      padding:20px;
-      border-radius:var(--radius);
-      background:var(--panel-2); /* Use panel-2 for box background */
-      border:var(--border-glass); /* Glass border */
-      margin-bottom:24px;
-      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
-      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
-    }
-    /* Color indicators remain solid for clarity */
-    .training{ box-shadow: inset 4px 0 0 var(--accent); }
-    .nutrition{ box-shadow: inset 4px 0 0 var(--info); }
-    .compounds{ box-shadow: inset 4px 0 0 var(--danger); }
+        /* Quick Notes */
+        .quick-notes {
+            margin-top: 16px;
+        }
+        
+        .quick-notes textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--pink-light);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .quick-notes textarea:focus {
+            outline: none;
+            border-color: var(--pink-hot);
+        }
 
-    /* Lists */
-    ul{ list-style:none; padding-left:0; margin:0; }
-    ul li{ position:relative; padding-left:20px; margin-bottom:10px;}
-    ul li::before{
-      content:"•";
-      position:absolute; left:0; top:0;
-      color:var(--accent);
-      font-weight:700; font-size:1.1em; line-height:1.1;
-    }
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 20, 147, 0.3);
+        }
+        
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+        }
+        
+        .nav-btn-secondary {
+            background: white;
+            color: var(--pink-deep);
+            border: 2px solid var(--pink-light);
+        }
+        
+        .nav-btn-secondary:hover {
+            background: var(--pink-pale);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-    /* Grid */
-    .phase-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap:18px;
-      margin-top:10px;
-    }
+        /* Floating Timer */
+        .floating-timer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            border-radius: 50%;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .floating-timer:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-timer.running {
+            background: linear-gradient(135deg, var(--green), #059669);
+        }
+        
+        .timer-icon {
+            font-size: 1.8rem;
+        }
+        
+        .timer-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+        }
 
-    /* Tables */
-    .table-wrap{
-      overflow-x:auto;
-      border:var(--border-glass); /* Glass border */
-      border-radius:var(--radius);
-      backdrop-filter: var(--backdrop-filter); /* Apply glass effect */
-      -webkit-backdrop-filter: var(--backdrop-filter); /* Safari support */
-    }
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size:.95rem;
-      min-width:700px; /* allows horizontal scroll on small screens */
-    }
-    th, td{
-      padding:12px 14px;
-      text-align:left;
-      border-bottom:1px solid rgba(255, 255, 255, 0.08); /* Lighter border for glass */
-    }
-    th{
-      background: rgba(17, 17, 17, 0.7); /* Transparent background for glass look */
-      color:var(--accent);
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
-    tr:nth-child(even){ background: rgba(31, 31, 31, 0.5); } /* Transparent for glass */
-    tr:hover{ background: rgba(42, 42, 42, 0.7); } /* Transparent for glass */
+        /* Timer Modal */
+        .timer-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .timer-modal.active {
+            display: flex;
+        }
+        
+        .timer-modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+        
+        .timer-display.running {
+            background: linear-gradient(135deg, var(--green), #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .timer-presets {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .timer-preset {
+            padding: 8px 16px;
+            border: 2px solid var(--pink-light);
+            border-radius: 12px;
+            background: white;
+            color: var(--text-dark);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .timer-preset.active {
+            background: var(--pink-hot);
+            color: white;
+            border-color: var(--pink-hot);
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .timer-controls button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
-    /* Footer line (retained for structure, but empty) */
-    .footer{
-      text-align:center;
-      margin-top:32px;
-      color:var(--muted);
-      border-top:1px solid var(--line-2);
-      padding-top:16px;
-      font-size:.9rem;
-    }
+        /* Analytics View */
+        .analytics-section {
+            padding: 20px;
+        }
+        
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, white, var(--pink-pale));
+            border: 2px solid var(--pink-light);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        .pr-list {
+            background: white;
+            border: 2px solid var(--pink-light);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .pr-list-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        
+        .pr-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--pink-pale);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .pr-exercise {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .pr-stats {
+            font-weight: 700;
+            color: var(--pink-hot);
+        }
 
-    /* Responsive */
-    @media (max-width:768px){
-      .container{ padding:22px 16px; margin:20px auto; }
-      h1{ letter-spacing:1px }
-      .tab-labels { flex-wrap: wrap; }
-      .tab-label { width: 50%; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-      .tab-label:last-child { border-bottom: none; } /* Fix for last label */
-    }
-  </style>
+        /* History View */
+        .history-section {
+            padding: 20px;
+        }
+        
+        .history-calendar {
+            background: white;
+            border: 2px solid var(--pink-light);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: var(--pink-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+        
+        .calendar-day.workout-day {
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            color: white;
+        }
+        
+        .calendar-day.today {
+            border: 2px solid var(--pink-hot);
+        }
+        
+        .history-list {
+            background: white;
+            border: 2px solid var(--pink-light);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .history-item {
+            background: var(--pink-pale);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .history-date {
+            font-weight: 700;
+            color: var(--pink-hot);
+        }
+        
+        .history-sets {
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+
+        /* Completion Modal */
+        .completion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.5s;
+        }
+        
+        .completion-modal.active {
+            display: flex;
+        }
+        
+        .completion-content {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--pink-hot);
+            position: absolute;
+            animation: confettiFall 3s ease-out forwards;
+        }
+        
+        @keyframes confettiFall {
+            to {
+                transform: translateY(400px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .completion-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .completion-title {
+            font-family: 'Chewy', cursive;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        
+        .completion-stats {
+            margin: 20px 0;
+        }
+        
+        .completion-stat {
+            margin: 8px 0;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+        }
+        
+        .completion-stat strong {
+            color: var(--pink-hot);
+        }
+        
+        .completion-quote {
+            font-style: italic;
+            color: var(--text-medium);
+            margin: 20px 0;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 380px) {
+            .set-fields {
+                flex-direction: column;
+            }
+            .set-multiplier {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mb-1 { margin-bottom: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+        .mt-2 { margin-top: 16px; }
+    </style>
 </head>
 <body>
-  <main class="container">
-    <h1>20-Week Hyper-Anabolic Protocol</h1>
-
-    <!-- PURE CSS TAB IMPLEMENTATION --><div class="tab-container">
-        <!-- Input Radios for State Management --><input type="radio" id="tab-1" name="tab-group" class="tab-input" checked>
-        <input type="radio" id="tab-2" name="tab-group" class="tab-input">
-        <input type="radio" id="tab-3" name="tab-group" class="tab-input">
-        <input type="radio" id="tab-4" name="tab-group" class="tab-input">
-
-        <!-- Labels/Buttons --><div class="tab-labels">
-            <label for="tab-1" class="tab-label">Overview</label>
-            <label for="tab-2" class="tab-label">Training</label>
-            <label for="tab-3" class="tab-label">Pharmacology</label>
-            <label for="tab-4" class="tab-label">Diet</label>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="app-title">💪 Jasmin's HIT Tracker</div>
+            <div class="app-subtitle">High Intensity • Menzer Style</div>
         </div>
 
-        <hr class="divider" />
+        <!-- Tab Navigation -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('track')">Track</button>
+            <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+            <button class="tab-btn" onclick="switchTab('history')">History</button>
+        </div>
 
-        <!-- 1. Overview Content --><section id="content-1" class="tab-content">
-          <div class="color-code-box compounds">
-            <h2 style="text-align: center;">Mission Objectives: Recomposition & Regrowth</h2>
-            <p class="muted" style="text-align:center; margin-bottom:16px;">
-              This protocol is engineered to aggressively leverage <strong>myonuclei retention</strong> (muscle memory) over 20 weeks, converting stored energy into high-quality muscle fiber.
-            </p>
-
-            <div class="phase-grid">
-              <div>
-                <h3>Critical Risks & Monitoring</h3>
-                <p style="color:var(--danger); font-weight:700; margin:0 0 6px;">Zero side effects are not guaranteed.</p>
-                <ul>
-                  <li><strong>CVS Load:</strong> High volume and compound usage demand constant blood pressure/lipid monitoring.</li>
-                  <li><strong>Tissue Integrity:</strong> Tendons/joints must be protected. High-rep warm-ups and <strong>BPC-157</strong> are mandatory.</li>
-                  <li><strong>Bloodwork:</strong> Critical monitoring every <span class="data-label">4–6 weeks</span> to guide protocol adjustments.</li>
-                </ul>
-              </div>
-              <div>
-                <h3>Performance Goals</h3>
-                <ul>
-                  <li><strong>Primary Objective:</strong> Achieve significant <span class="data-label">body recomposition</span> (aggressive fat loss with maximal muscle gain).</li>
-                  <li><strong>Weakness Eradication:</strong> Systematically eliminate the arm weakness via high-frequency training.</li>
-                  <li><strong>Initial Target:</strong> Transition from <span class="data-label">205 lb</span> to a lean, conditioned <span class="data-label">215–225 lb</span> by Week 20.</li>
-                </ul>
-              </div>
+        <!-- Track Tab -->
+        <div id="track-tab" class="tab-content active">
+            <!-- Controls -->
+            <div class="workout-controls">
+                <input type="date" id="workout-date">
+                <select id="day-select">
+                    <option value="day1">Day 1: Quads</option>
+                    <option value="day2">Day 2: Hamstrings</option>
+                    <option value="day4">Day 4: Glutes</option>
+                    <option value="day5">Day 5: Upper</option>
+                    <option value="day6">Day 6: Abs/Core</option>
+                </select>
             </div>
 
-            <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line-2);">
-              <h3 style="color:var(--info);">Protocol Phase Architecture</h3>
-              <ul>
-                <li><strong>Phase 1 (Weeks 1–4):</strong> High volume, lower intensity, tissue stabilization.</li>
-                <li><strong>Phase 2 (Weeks 5–12):</strong> Increased load, PPL ×2, Nandrolone initiated for joint support.</li>
-                <li><strong>Phase 3 (Weeks 13–20):</strong> Body-part split, RPE 9–10, maximal caloric/compound saturation.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- 2. Training Content --><section id="content-2" class="tab-content">
-          <div class="color-code-box training">
-            <h2>Training Protocol Overload</h2>
-            <p style="color:var(--accent); font-weight:700; text-transform:uppercase; margin:0 0 10px;">Primary Focus: Progressive Overload & High-Frequency Arms</p>
-
-            <div class="phase-grid">
-              <div>
-                <h3>Phase 1: Re-Awakening</h3>
-                <p style="font-weight:700; margin:0 0 6px;">Weeks 1–4</p>
-                <ul>
-                  <li><strong>Frequency:</strong> <span class="data-label">6 days on / 1 day off</span></li>
-                  <li><strong>Intensity:</strong> <span class="data-label">RPE 7</span> (≈3 reps in reserve)</li>
-                  <li><strong>Reps:</strong> <span class="data-label">12–20</span> (joint conditioning / capillary density)</li>
-                  <li><strong>Split:</strong> Full-body / Upper–Lower hybrid</li>
-                </ul>
-              </div>
-              <div>
-                <h3>Phase 2: Intensity Drive</h3>
-                <p style="font-weight:700; margin:0 0 6px;">Weeks 5–12</p>
-                <ul>
-                  <li><strong>Frequency:</strong> <span class="data-label">6 days on / 1 day off</span></li>
-                  <li><strong>Intensity:</strong> <span class="data-label">RPE 8–9</span> (1–2 reps in reserve)</li>
-                  <li><strong>Reps:</strong> <span class="data-label">8–12</span> (primary hypertrophy)</li>
-                  <li><strong>Split:</strong> PPL ×2</li>
-                  <li><strong>Technique:</strong> Introduce <span class="data-label">BFR</span> for arms</li>
-                </ul>
-              </div>
-              <div>
-                <h3>Phase 3: Peak Overload</h3>
-                <p style="font-weight:700; margin:0 0 6px;">Weeks 13–20</p>
-                <ul>
-                  <li><strong>Frequency:</strong> <span class="data-label">5 days on / 2 days off</span></li>
-                  <li><strong>Intensity:</strong> <span class="data-label">RPE 9–10</span> (final sets to failure)</li>
-                  <li><strong>Reps:</strong> <span class="data-label">6–12</span> (strength & size)</li>
-                  <li><strong>Split:</strong> Body-part split (prioritize recovery)</li>
-                  <li><strong>Technique:</strong> Giant sets, forced reps, heavy negatives</li>
-                </ul>
-              </div>
-            </div>
-
-            <h3 style="margin-top: 22px;">Sample Workout: Phase 2 — Pull Day</h3>
-            <ul>
-              <li>Heavy T-Bar Row (4 × 8–10)</li>
-              <li>Chest-Supported Row (4 × 10–12)</li>
-              <li>Weighted Chins (4 × 8–12)</li>
-              <li>Face Pulls (3 × 15)</li>
-              <li>Biceps: 1 set of 100-rep Cable Curls (<strong>rest-pause</strong>)</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- 3. Pharmacology Content --><section id="content-3" class="tab-content">
-          <div class="color-code-box compounds">
-            <h2>Compound Protocol</h2>
-            <p style="color:var(--danger); font-weight:700; text-transform:uppercase; margin:0 0 14px;">EOD Injection Schedule (adjust by bloodwork only)</p>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Compound</th>
-                    <th>Weekly Dose</th>
-                    <th>Phase 1 (Weeks 1–4)</th>
-                    <th>Phase 2 (Weeks 5–12)</th>
-                    <th>Phase 3 (Weeks 13–20)</th>
-                    <th>Rationale</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td data-label="Compound">Testosterone (E/C)</td>
-                    <td data-label="Weekly Dose"><span class="data-label">200 mg</span></td>
-                    <td>200 mg</td>
-                    <td>200 mg</td>
-                    <td>200 mg</td>
-                    <td>TRT base</td>
-                  </tr>
-                  <tr>
-                    <td data-label="Compound">Primobolan</td>
-                    <td data-label="Weekly Dose"><span class="data-label">600 mg</span></td>
-                    <td>400 mg</td>
-                    <td>600 mg</td>
-                    <td>600 mg</td>
-                    <td>Clean anabolism / recomp</td>
-                  </tr>
-                  <tr>
-                    <td data-label="Compound">Nandrolone Decanoate</td>
-                    <td data-label="Weekly Dose"><span class="data-label">500 mg</span></td>
-                    <td>0 mg</td>
-                    <td>400 mg</td>
-                    <td>500 mg</td>
-                    <td>Joint support</td>
-                  </tr>
-                  <tr>
-                    <td data-label="Compound">BPC-157 (Peptide)</td>
-                    <td data-label="Weekly Dose"><span class="data-label">500 µg daily</span></td>
-                    <td>Daily</td>
-                    <td>As needed</td>
-                    <td>As needed</td>
-                    <td>Proactive tissue repair</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- 4. Diet Content --><section id="content-4" class="tab-content">
-          <div class="color-code-box nutrition">
-            <h2>Nutrition & Recovery Strategy</h2>
-            <p style="color:var(--info); font-weight:700; text-transform:uppercase; margin:0 0 10px;">Precision Carb Cycling for Hypertrophy & Fat Loss</p>
-
-            <div class="phase-grid">
-              <div>
-                <h3>Macro Constants</h3>
-                <ul>
-                  <li><strong>Protein:</strong> <span class="data-label">308 g minimum</span> (≈1.5 g/lb)</li>
-                  <li><strong>Sleep:</strong> <span class="data-label">9 hours</span></li>
-                  <li><strong>Meal Prep:</strong> Non-negotiable for adherence</li>
-                </ul>
-                <h3>Supplementation</h3>
-                <ul>
-                  <li><strong>Creatine:</strong> 5 g daily</li>
-                  <li><strong>Intra-Workout:</strong> EAAs + fast carbs (high days)</li>
-                  <li><strong>Post-Workout:</strong> Protein isolate + <span class="data-label">75–100 g HGC</span> (high days)</li>
-                  <li><strong>Omega-3s:</strong> 4–6 g EPA/DHA daily</li>
-                </ul>
-              </div>
-
-              <div style="grid-column: span 2;">
-                <h3>Carb Cycling Summary</h3>
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Phase</th>
-                        <th>Day Type</th>
-                        <th>Carbs (C)</th>
-                        <th>Fat (F)</th>
-                        <th>Calorie Goal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td rowspan="2">Phase 1 (Weeks 1–4)</td>
-                        <td>High (Training)</td>
-                        <td>250 g</td>
-                        <td>65 g</td>
-                        <td><span class="data-label">~2,900 kcal</span> (slight surplus)</td>
-                      </tr>
-                      <tr>
-                        <td>Low (Rest)</td>
-                        <td>50 g</td>
-                        <td>80 g</td>
-                        <td><span class="data-label">~2,200 kcal</span> (moderate deficit)</td>
-                      </tr>
-                       <tr>
-                        <td rowspan="2">Phase 2 (Weeks 5–12)</td>
-                        <td>High (Training)</td>
-                        <td>375 g</td>
-                        <td>75 g</td>
-                        <td><span class="data-label">~3,500 kcal</span> (solid surplus)</td>
-                      </tr>
-                      <tr>
-                        <td>Low (Rest)</td>
-                        <td>75 g</td>
-                        <td>90 g</td>
-                        <td><span class="data-label">~2,500 kcal</span> (slight deficit)</td>
-                      </tr>
-                      <tr>
-                        <td rowspan="2">Phase 3 (Weeks 13–20)</td>
-                        <td>High (Training)</td>
-                        <td>500 g</td>
-                        <td>80 g</td>
-                        <td><span class="data-label">~4,100 kcal</span> (high anabolic surplus)</td>
-                      </tr>
-                      <tr>
-                        <td>Low (Rest)</td>
-                        <td>100 g</td>
-                        <td>70 g</td>
-                        <td><span class="data-label">~2,300 kcal</span> (sharpening deficit)</td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <!-- Progress Ring -->
+            <div class="progress-section">
+                <div class="progress-ring">
+                    <svg width="120" height="120">
+                        <defs>
+                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FF1493" />
+                                <stop offset="100%" style="stop-color:#E91E63" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="bg-circle" cx="60" cy="60" r="52"></circle>
+                        <circle class="progress-circle" cx="60" cy="60" r="52" 
+                                stroke-dasharray="326.73" stroke-dashoffset="326.73" id="progress-circle"></circle>
+                    </svg>
+                    <div class="progress-text" id="progress-text">0/4</div>
                 </div>
-              </div>
-
+                <div class="progress-label" id="progress-label">Ready to crush it!</div>
+                <div class="progress-sublabel" id="progress-sublabel">Select your workout day above</div>
             </div>
-          </div>
-        </section>
+
+            <!-- Current Exercise -->
+            <div id="current-exercise-container"></div>
+
+            <!-- Save Workout Button -->
+            <div style="padding: 20px;">
+                <button class="nav-btn nav-btn-primary" style="width: 100%;" onclick="saveWorkout()">
+                    💾 Save Workout
+                </button>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content">
+            <div class="analytics-section">
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-workouts">0</div>
+                        <div class="stat-label">Total Workouts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-sets">0</div>
+                        <div class="stat-label">Total Sets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="prs-count">0</div>
+                        <div class="stat-label">Personal Records</div>
+                    </div>
+                </div>
+
+                <div class="pr-list">
+                    <div class="pr-list-title">🏆 Personal Records</div>
+                    <div id="pr-list-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history-tab" class="tab-content">
+            <div class="history-section">
+                <div class="history-calendar">
+                    <div class="calendar-title">📅 This Month</div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+
+                <div class="history-list">
+                    <div class="pr-list-title">📝 Recent Workouts</div>
+                    <div id="history-list-content"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- END PURE CSS TAB IMPLEMENTATION --></main>
+
+    <!-- Floating Timer -->
+    <div class="floating-timer" onclick="openTimer()">
+        <span class="timer-icon" id="timer-float-icon">⏱️</span>
+    </div>
+
+    <!-- Timer Modal -->
+    <div class="timer-modal" id="timer-modal">
+        <div class="timer-modal-content">
+            <h3 style="font-family: 'Chewy'; font-size: 1.5rem; margin-bottom: 16px;">Rest Timer</h3>
+            <div class="timer-display" id="timer-display">03:00</div>
+            <div class="timer-presets">
+                <div class="timer-preset" onclick="setRestTime(60)">1:00</div>
+                <div class="timer-preset active" onclick="setRestTime(180)">3:00</div>
+                <div class="timer-preset" onclick="setRestTime(300)">5:00</div>
+                <div class="timer-preset" onclick="setRestTime(420)">7:00</div>
+            </div>
+            <div class="timer-controls">
+                <button class="nav-btn nav-btn-secondary" onclick="closeTimer()">Close</button>
+                <button class="nav-btn nav-btn-primary" id="timer-start-btn" onclick="toggleTimer()">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Modal -->
+    <div class="completion-modal" id="completion-modal">
+        <div class="completion-content">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title">WORKOUT CRUSHED!</div>
+            <div class="completion-stats" id="completion-stats"></div>
+            <div class="completion-quote">"The pain you feel today will be the strength you feel tomorrow"</div>
+            <button class="nav-btn nav-btn-primary" style="width: 100%;" onclick="closeCompletionModal()">
+                Awesome! 💪
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Workout Data
+        const workoutData = {
+            day1: {
+                name: "Day 1: Quad Focus",
+                exercises: [
+                    {name: "Leg Extension", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Hack Squat or Leg Press", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Bulgarian Split Squat", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Sissy Squat", sets: 1, reps: "Failure", type: "isolation"}
+                ]
+            },
+            day2: {
+                name: "Day 2: Hamstring Stretch",
+                exercises: [
+                    {name: "Lying Hamstring Curl", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Romanian Deadlift", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Seated Hamstring Curl", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Glute-Ham Raise", sets: 1, reps: "Failure", type: "compound"}
+                ]
+            },
+            day4: {
+                name: "Day 4: Glute Focus",
+                exercises: [
+                    {name: "Hip Thrust", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Smith Machine Reverse Lunge", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Cable Kickback", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Abductor Machine", sets: 1, reps: "Failure", type: "isolation"}
+                ]
+            },
+            day5: {
+                name: "Day 5: Upper Body",
+                exercises: [
+                    {name: "Chest Press", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Row", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Shoulder Press", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Bicep Curl", sets: 1, reps: "Failure", type: "isolation"}
+                ]
+            },
+            day6: {
+                name: "Day 6: Abs/Core",
+                exercises: [
+                    {name: "Plank", sets: 1, reps: "60s", type: "isolation"},
+                    {name: "Russian Twists", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Leg Raises", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Mountain Climbers", sets: 1, reps: "Failure", type: "compound"}
+                ]
+            }
+        };
+
+        // State
+        let currentDay = 'day1';
+        let currentExerciseIndex = 0;
+        let sessionData = {};
+        let timerInterval = null;
+        let timerSeconds = 180;
+        let timerRunning = false;
+
+        // Storage Helper
+        const storage = {
+            get: (key, def) => {
+                try {
+                    const val = localStorage.getItem(key);
+                    return val ? JSON.parse(val) : def;
+                } catch { return def; }
+            },
+            set: (key, val) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(val));
+                    return true;
+                } catch { return false; }
+            }
+        };
+
+        // Initialize
+        function init() {
+            document.getElementById('workout-date').valueAsDate = new Date();
+            const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
+            const dayMap = {Monday: 'day1', Tuesday: 'day2', Thursday: 'day4', Friday: 'day5', Saturday: 'day6'};
+            currentDay = dayMap[today] || 'day1';
+            document.getElementById('day-select').value = currentDay;
+            
+            loadWorkout();
+            renderAnalytics();
+            renderHistory();
+            renderCalendar();
+
+            document.getElementById('day-select').addEventListener('change', (e) => {
+                currentDay = e.target.value;
+                loadWorkout();
+            });
+        }
+
+        // Load Workout
+        function loadWorkout() {
+            currentExerciseIndex = 0;
+            sessionData = {};
+            const workout = workoutData[currentDay];
+            if (!workout) return;
+
+            updateProgress();
+            renderExercise();
+        }
+
+        // Render Current Exercise
+        function renderExercise() {
+            const workout = workoutData[currentDay];
+            if (!workout) return;
+
+            const exercise = workout.exercises[currentExerciseIndex];
+            const exIdx = currentExerciseIndex;
+            const numSets = parseInt(exercise.sets) || 1;
+
+            // Get PR data
+            const prs = storage.get('personalRecords', {});
+            const pr = prs[exercise.name];
+            const history = storage.get('workoutHistory', []);
+            const lastWorkout = history.filter(w => 
+                w.exercises.some(e => e.name === exercise.name)
+            ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            
+            let lastTime = null;
+            if (lastWorkout) {
+                const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
+                if (lastEx && lastEx.sets && lastEx.sets[1]) {
+                    lastTime = lastEx.sets[1];
+                }
+            }
+
+            let html = `
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div>
+                            <div class="exercise-name">${exercise.name}</div>
+                            <div class="exercise-target">Target: ${exercise.sets} × ${exercise.reps}</div>
+                        </div>
+                        <div class="exercise-type-badge badge-${exercise.type}">
+                            ${exercise.type}
+                        </div>
+                    </div>
+            `;
+
+            // PR Display
+            if (pr || lastTime) {
+                html += `<div class="pr-display"><div class="pr-display-title">📊 Your Stats</div><div class="pr-display-stats">`;
+                if (lastTime) {
+                    html += `<div class="pr-stat"><div class="pr-stat-label">Last Time</div><div class="pr-stat-value">${lastTime.weight} × ${lastTime.reps}</div></div>`;
+                }
+                if (pr) {
+                    html += `<div class="pr-stat"><div class="pr-stat-label">Your PR</div><div class="pr-stat-value">${pr.weight} × ${pr.reps}</div></div>`;
+                }
+                html += `</div></div>`;
+            }
+
+            // Sets
+            for (let i = 1; i <= numSets; i++) {
+                const setData = sessionData[exIdx]?.sets?.[i] || {};
+                const completed = setData.weight && setData.reps;
+                html += `
+                    <div class="set-input ${completed ? 'completed' : ''}">
+                        <div class="set-label">Set ${i}</div>
+                        <div class="set-fields">
+                            <div class="set-field">
+                                <label>Weight (lbs)</label>
+                                <input type="number" id="weight-${exIdx}-${i}" value="${setData.weight || ''}" 
+                                       oninput="handleInput(${exIdx}, ${i})" min="0" step="0.5">
+                            </div>
+                            <div class="set-multiplier">×</div>
+                            <div class="set-field">
+                                <label>Reps</label>
+                                <input type="number" id="reps-${exIdx}-${i}" value="${setData.reps || ''}"
+                                       oninput="handleInput(${exIdx}, ${i})" min="0" step="1">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Quick Notes
+            html += `
+                <div class="quick-notes">
+                    <textarea id="notes-${exIdx}" placeholder="Quick notes (optional)...">${sessionData[exIdx]?.notes || ''}</textarea>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn nav-btn-secondary" onclick="prevExercise()" ${currentExerciseIndex === 0 ? 'disabled' : ''}>
+                        ← Previous
+                    </button>
+                    <button class="nav-btn nav-btn-primary" onclick="nextExercise()">
+                        ${currentExerciseIndex === workout.exercises.length - 1 ? 'Finish' : 'Next →'}
+                    </button>
+                </div>
+            </div>`;
+
+            document.getElementById('current-exercise-container').innerHTML = html;
+        }
+
+        // Handle Input
+        function handleInput(exIdx, setNum) {
+            if (!sessionData[exIdx]) sessionData[exIdx] = {sets: {}, notes: ''};
+            
+            const weight = parseFloat(document.getElementById(`weight-${exIdx}-${setNum}`).value) || 0;
+            const reps = parseInt(document.getElementById(`reps-${exIdx}-${setNum}`).value) || 0;
+            
+            if (weight && reps) {
+                sessionData[exIdx].sets[setNum] = {weight, reps, tonnage: weight * reps};
+                updateProgress();
+                renderExercise();
+            }
+        }
+
+        // Navigation
+        function nextExercise() {
+            const workout = workoutData[currentDay];
+            // Save notes
+            const notes = document.getElementById(`notes-${currentExerciseIndex}`);
+            if (notes) {
+                if (!sessionData[currentExerciseIndex]) sessionData[currentExerciseIndex] = {sets: {}, notes: ''};
+                sessionData[currentExerciseIndex].notes = notes.value;
+            }
+
+            if (currentExerciseIndex < workout.exercises.length - 1) {
+                currentExerciseIndex++;
+                renderExercise();
+                updateProgress();
+            } else {
+                saveWorkout();
+            }
+        }
+
+        function prevExercise() {
+            if (currentExerciseIndex > 0) {
+                currentExerciseIndex--;
+                renderExercise();
+                updateProgress();
+            }
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const workout = workoutData[currentDay];
+            if (!workout) return;
+
+            let completedSets = 0;
+            let totalSets = 0;
+
+            workout.exercises.forEach((ex, idx) => {
+                const sets = parseInt(ex.sets) || 1;
+                totalSets += sets;
+                if (sessionData[idx]?.sets) {
+                    completedSets += Object.keys(sessionData[idx].sets).length;
+                }
+            });
+
+            const percentage = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+            const circumference = 2 * Math.PI * 52;
+            const offset = circumference - (percentage / 100) * circumference;
+
+            document.getElementById('progress-circle').style.strokeDashoffset = offset;
+            document.getElementById('progress-text').textContent = `${completedSets}/${totalSets}`;
+
+            if (completedSets === 0) {
+                document.getElementById('progress-label').textContent = "Ready to crush it!";
+                document.getElementById('progress-sublabel').textContent = `${workout.exercises.length} exercises today`;
+            } else if (completedSets === totalSets) {
+                document.getElementById('progress-label').textContent = "Workout Complete!";
+                document.getElementById('progress-sublabel').textContent = "Time to save 💪";
+            } else {
+                document.getElementById('progress-label').textContent = `${Math.round(percentage)}% Complete`;
+                document.getElementById('progress-sublabel').textContent = `${totalSets - completedSets} sets remaining`;
+            }
+        }
+
+        // Save Workout
+        function saveWorkout() {
+            const workout = workoutData[currentDay];
+            const date = document.getElementById('workout-date').value;
+
+            const exercises = workout.exercises.map((ex, idx) => ({
+                name: ex.name,
+                sets: sessionData[idx]?.sets || {},
+                notes: sessionData[idx]?.notes || ''
+            }));
+
+            const totalSets = exercises.reduce((sum, ex) => sum + Object.keys(ex.sets).length, 0);
+
+            if (totalSets === 0) {
+                alert('No sets logged! Add some data first.');
+                return;
+            }
+
+            const workoutEntry = {
+                date,
+                day: currentDay,
+                name: workout.name,
+                exercises,
+                totalVolume: totalSets
+            };
+
+            const history = storage.get('workoutHistory', []);
+            history.push(workoutEntry);
+            storage.set('workoutHistory', history);
+
+            updatePRs(exercises);
+            showCompletionModal(workoutEntry);
+            
+            // Reset
+            sessionData = {};
+            currentExerciseIndex = 0;
+            renderExercise();
+            updateProgress();
+            renderAnalytics();
+            renderHistory();
+            renderCalendar();
+        }
+
+        // Update PRs
+        function updatePRs(exercises) {
+            const prs = storage.get('personalRecords', {});
+            
+            exercises.forEach(ex => {
+                Object.values(ex.sets).forEach(set => {
+                    if (!prs[ex.name] || set.tonnage > prs[ex.name].tonnage) {
+                        prs[ex.name] = {weight: set.weight, reps: set.reps, tonnage: set.tonnage};
+                    }
+                });
+            });
+
+            storage.set('personalRecords', prs);
+        }
+
+        // Show Completion Modal
+        function showCompletionModal(workout) {
+            const modal = document.getElementById('completion-modal');
+            modal.classList.add('active');
+
+            // Confetti
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#FF1493', '#E91E63', '#A855F7', '#10B981'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    modal.querySelector('.completion-content').appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 20);
+            }
+
+            document.getElementById('completion-stats').innerHTML = `
+                <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
+                <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises crushed</div>
+                <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
+            `;
+        }
+
+        function closeCompletionModal() {
+            document.getElementById('completion-modal').classList.remove('active');
+        }
+
+        // Timer Functions
+        function openTimer() {
+            document.getElementById('timer-modal').classList.add('active');
+        }
+
+        function closeTimer() {
+            document.getElementById('timer-modal').classList.remove('active');
+        }
+
+        function setRestTime(seconds) {
+            if (timerRunning) return;
+            timerSeconds = seconds;
+            updateTimerDisplay();
+            document.querySelectorAll('.timer-preset').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleTimer() {
+            if (timerRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            timerRunning = true;
+            document.getElementById('timer-start-btn').textContent = 'Pause';
+            document.querySelector('.timer-display').classList.add('running');
+            document.querySelector('.floating-timer').classList.add('running');
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+
+                if (timerSeconds <= 0) {
+                    stopTimer();
+                    alert('⏰ Rest time complete! Time for your next set!');
+                    if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+                    timerSeconds = 180;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            timerRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('timer-start-btn').textContent = 'Start';
+            document.querySelector('.timer-display').classList.remove('running');
+            document.querySelector('.floating-timer').classList.remove('running');
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            const display = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('timer-display').textContent = display;
+            
+            if (timerRunning) {
+                document.getElementById('timer-float-icon').textContent = display;
+            } else {
+                document.getElementById('timer-float-icon').textContent = '⏱️';
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+
+            if (tab === 'analytics') renderAnalytics();
+            if (tab === 'history') {
+                renderHistory();
+                renderCalendar();
+            }
+        }
+
+        // Render Analytics
+        function renderAnalytics() {
+            const history = storage.get('workoutHistory', []);
+            const prs = storage.get('personalRecords', {});
+
+            document.getElementById('total-workouts').textContent = history.length;
+            document.getElementById('total-sets').textContent = history.reduce((sum, w) => sum + w.totalVolume, 0);
+            document.getElementById('prs-count').textContent = Object.keys(prs).length;
+
+            // Streak calculation
+            const sortedDates = history.map(w => new Date(w.date)).sort((a, b) => b - a);
+            let streak = 0;
+            if (sortedDates.length > 0) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                let checkDate = new Date(sortedDates[0]);
+                checkDate.setHours(0, 0, 0, 0);
+                
+                if (checkDate.getTime() === today.getTime() || checkDate.getTime() === today.getTime() - 86400000) {
+                    streak = 1;
+                    for (let i = 1; i < sortedDates.length; i++) {
+                        const prevDate = new Date(sortedDates[i]);
+                        prevDate.setHours(0, 0, 0, 0);
+                        const diff = checkDate - prevDate;
+                        if (diff === 86400000) {
+                            streak++;
+                            checkDate = prevDate;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            document.getElementById('current-streak').textContent = streak;
+
+            // PR List
+            const prEntries = Object.entries(prs).sort((a, b) => b[1].tonnage - a[1].tonnage);
+            let prHtml = '';
+            if (prEntries.length === 0) {
+                prHtml = '<div style="text-align: center; color: var(--text-medium); padding: 20px;">No PRs yet - start crushing it!</div>';
+            } else {
+                prEntries.forEach(([name, pr]) => {
+                    prHtml += `
+                        <div class="pr-item">
+                            <div class="pr-exercise">${name}</div>
+                            <div class="pr-stats">${pr.weight} × ${pr.reps}</div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('pr-list-content').innerHTML = prHtml;
+        }
+
+        // Render History
+        function renderHistory() {
+            const history = storage.get('workoutHistory', []).sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '';
+            if (history.length === 0) {
+                html = '<div style="text-align: center; color: var(--text-medium); padding: 20px;">No workouts logged yet</div>';
+            } else {
+                history.slice(0, 20).forEach(w => {
+                    html += `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <div class="history-date">${new Date(w.date).toLocaleDateString()}</div>
+                                <div class="history-sets">${w.totalVolume} sets</div>
+                            </div>
+                            <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">${w.name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-medium);">
+                                ${w.exercises.map(e => e.name).join(', ')}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('history-list-content').innerHTML = html;
+        }
+
+        // Render Calendar
+        function renderCalendar() {
+            const history = storage.get('workoutHistory', []);
+            const workoutDates = new Set(history.map(w => w.date));
+            
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+            let html = '';
+            
+            // Day headers
+            ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+                html += `<div style="text-align: center; font-weight: 700; color: var(--text-medium); padding: 4px;">${d}</div>`;
+            });
+            
+            // Empty cells for offset
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                html += '<div></div>';
+            }
+            
+            // Days
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), day);
+                const dateStr = date.toISOString().split('T')[0];
+                const isToday = day === today.getDate();
+                const hasWorkout = workoutDates.has(dateStr);
+                
+                html += `<div class="calendar-day ${hasWorkout ? 'workout-day' : ''} ${isToday ? 'today' : ''}">${day}</div>`;
+            }
+            
+            document.getElementById('calendar-grid').innerHTML = html;
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
