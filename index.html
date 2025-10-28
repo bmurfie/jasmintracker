@@ -1195,6 +1195,72 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            margin-top: 16px;
+        }
+
+        .swap-custom-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .swap-custom-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .swap-custom-input input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .swap-custom-input button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .swap-custom-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .swap-divider {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.813rem;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .swap-divider::before,
+        .swap-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        .swap-divider::before {
+            left: 0;
+        }
+
+        .swap-divider::after {
+            right: 0;
         }
 
         .swap-exercise-item {
@@ -1218,6 +1284,133 @@
             background: var(--accent-rose);
             color: white;
             cursor: not-allowed;
+        }
+
+        .body-weight-section {
+            padding: 20px;
+        }
+
+        .body-weight-input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.04);
+        }
+
+        .body-weight-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            align-items: stretch;
+        }
+
+        .body-weight-input-row input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.2s;
+            min-width: 0;
+        }
+
+        .body-weight-input-row input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .body-weight-input-row button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .body-weight-input-row button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(74, 144, 226, 0.35);
+        }
+
+        .body-weight-current {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .body-weight-current-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            line-height: 1;
+        }
+
+        .body-weight-current-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .body-weight-history {
+            margin-top: 20px;
+        }
+
+        .body-weight-entry {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .body-weight-entry-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .body-weight-entry-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .body-weight-delete-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: all 0.2s;
+            margin-left: 12px;
+        }
+
+        .body-weight-delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         /* Utility Classes */
@@ -1291,6 +1484,7 @@
             <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
             <button class="tab-btn" onclick="switchTab('history')">History</button>
             <button class="tab-btn" onclick="switchTab('charts')">Charts</button>
+            <button class="tab-btn" onclick="switchTab('weight')">Weight</button>
             <button class="tab-btn" onclick="switchTab('nutrition')">Nutrition</button>
             <button class="tab-btn" onclick="switchTab('plan')">Plan</button>
         </div>
@@ -1393,6 +1587,39 @@
                 </div>
 
                 <div id="exercise-charts-container"></div>
+            </div>
+        </div>
+
+        <!-- Body Weight Tab -->
+        <div id="weight-tab" class="tab-content">
+            <div class="body-weight-section">
+                <!-- Current Weight Display -->
+                <div class="body-weight-input-card">
+                    <div class="content-card-title">Log Body Weight</div>
+                    
+                    <div class="body-weight-input-row">
+                        <input type="date" id="weight-date" />
+                        <input type="number" id="weight-input" placeholder="Weight (lbs)" step="0.1" />
+                        <button onclick="logBodyWeight()">Add</button>
+                    </div>
+
+                    <div class="body-weight-current" id="current-weight-display">
+                        <div class="body-weight-current-value" id="current-weight-value">--</div>
+                        <div class="body-weight-current-label">Current Weight (lbs)</div>
+                    </div>
+                </div>
+
+                <!-- Body Weight Chart -->
+                <div class="chart-container">
+                    <div class="chart-title">Body Weight Trend</div>
+                    <canvas id="body-weight-chart" class="chart-canvas"></canvas>
+                </div>
+
+                <!-- Weight History -->
+                <div class="content-card">
+                    <div class="content-card-title">Weight History</div>
+                    <div id="weight-history-list"></div>
+                </div>
             </div>
         </div>
 
@@ -1850,7 +2077,16 @@
         <div class="swap-modal-content">
             <button class="close-btn" onclick="closeSwapModal()">×</button>
             <h2 class="swap-modal-title">🔄 Swap Exercise</h2>
-            <p class="swap-modal-subtitle">Choose a replacement exercise</p>
+            <p class="swap-modal-subtitle">Choose or create a replacement exercise</p>
+            
+            <!-- Custom Exercise Input -->
+            <div class="swap-custom-input">
+                <input type="text" id="custom-exercise-input" placeholder="Type custom exercise name..." />
+                <button onclick="swapToCustomExercise()">Use</button>
+            </div>
+
+            <div class="swap-divider">or select from list</div>
+
             <div class="swap-exercise-list" id="swap-exercise-list"></div>
         </div>
     </div>
@@ -1932,6 +2168,8 @@
         let sessionData = {};
         let volumeChart = null;
         let exerciseCharts = [];
+        let bodyWeightChart = null;
+        let currentSwapExerciseIndex = null;
         
         // Timer state
         let timerInterval = null;
@@ -1962,6 +2200,7 @@
         // Initialize
         function init() {
             document.getElementById('workout-date').valueAsDate = new Date();
+            document.getElementById('weight-date').valueAsDate = new Date();
             document.getElementById('day-select').addEventListener('change', changeDay);
             
             loadDarkMode();
@@ -1979,6 +2218,7 @@
             if (tab === 'stats') renderAnalytics();
             if (tab === 'history') renderHistory();
             if (tab === 'charts') renderCharts();
+            if (tab === 'weight') renderBodyWeight();
         }
 
         function changeDay() {
@@ -1991,10 +2231,14 @@
 
         // Show Exercise Swap Modal
         function showSwapModal(exerciseIndex) {
+            currentSwapExerciseIndex = exerciseIndex;
             const workout = workoutData[currentDay];
             const currentExercise = workout.exercises[exerciseIndex];
             const muscleGroup = currentExercise.muscleGroup;
             const availableExercises = exerciseDatabase[muscleGroup] || [];
+            
+            // Clear custom input
+            document.getElementById('custom-exercise-input').value = '';
             
             const listHtml = availableExercises.map(ex => {
                 const isCurrent = ex === currentExercise.name;
@@ -2006,6 +2250,19 @@
             
             document.getElementById('swap-exercise-list').innerHTML = listHtml;
             document.getElementById('swap-modal').classList.add('active');
+        }
+
+        // Swap to custom exercise
+        function swapToCustomExercise() {
+            const customName = document.getElementById('custom-exercise-input').value.trim();
+            if (!customName) {
+                alert('Please enter an exercise name');
+                return;
+            }
+            
+            if (currentSwapExerciseIndex !== null) {
+                swapExercise(currentSwapExerciseIndex, customName);
+            }
         }
 
         // Swap Exercise
@@ -2025,6 +2282,7 @@
         // Close Swap Modal
         function closeSwapModal() {
             document.getElementById('swap-modal').classList.remove('active');
+            currentSwapExerciseIndex = null;
         }
 
         function renderExercise() {
@@ -2655,6 +2913,211 @@
             const seconds = timerSeconds % 60;
             document.getElementById('timer-display').textContent = 
                 `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Body Weight Tracking Functions
+        function logBodyWeight() {
+            const date = document.getElementById('weight-date').value;
+            const weight = parseFloat(document.getElementById('weight-input').value);
+            
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
+            if (!weight || weight <= 0) {
+                alert('Please enter a valid weight');
+                return;
+            }
+            
+            const bodyWeights = storage.get('bodyWeights', []);
+            
+            // Check if entry for this date already exists
+            const existingIndex = bodyWeights.findIndex(w => w.date === date);
+            if (existingIndex >= 0) {
+                if (confirm('Replace existing weight entry for this date?')) {
+                    bodyWeights[existingIndex] = { date, weight };
+                } else {
+                    return;
+                }
+            } else {
+                bodyWeights.push({ date, weight });
+            }
+            
+            // Sort by date
+            bodyWeights.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            storage.set('bodyWeights', bodyWeights);
+            
+            // Clear input and reset date to today
+            document.getElementById('weight-input').value = '';
+            document.getElementById('weight-date').valueAsDate = new Date();
+            
+            renderBodyWeight();
+        }
+
+        function deleteBodyWeight(index) {
+            if (!confirm('Delete this weight entry?')) {
+                return;
+            }
+            
+            const bodyWeights = storage.get('bodyWeights', []);
+            bodyWeights.splice(index, 1);
+            storage.set('bodyWeights', bodyWeights);
+            
+            renderBodyWeight();
+        }
+
+        function renderBodyWeight() {
+            const bodyWeights = storage.get('bodyWeights', []);
+            
+            // Update current weight display
+            if (bodyWeights.length > 0) {
+                const latestWeight = bodyWeights[bodyWeights.length - 1].weight;
+                document.getElementById('current-weight-value').textContent = latestWeight.toFixed(1);
+            } else {
+                document.getElementById('current-weight-value').textContent = '--';
+            }
+            
+            // Render chart
+            renderBodyWeightChart(bodyWeights);
+            
+            // Render history list
+            const historyContainer = document.getElementById('weight-history-list');
+            if (bodyWeights.length === 0) {
+                historyContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">No weight entries yet. Start tracking!</div>';
+            } else {
+                const reversedWeights = bodyWeights.slice().reverse();
+                historyContainer.innerHTML = reversedWeights.map((entry, reverseIdx) => {
+                    const originalIndex = bodyWeights.length - 1 - reverseIdx;
+                    const formattedDate = new Date(entry.date).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    
+                    // Calculate change from previous
+                    let changeHtml = '';
+                    if (originalIndex > 0) {
+                        const previousWeight = bodyWeights[originalIndex - 1].weight;
+                        const change = entry.weight - previousWeight;
+                        const changeColor = change > 0 ? 'var(--warning)' : change < 0 ? 'var(--success)' : 'var(--text-muted)';
+                        const changeSign = change > 0 ? '+' : '';
+                        changeHtml = `<span style="color: ${changeColor}; font-size: 0.875rem; margin-left: 8px;">${changeSign}${change.toFixed(1)}</span>`;
+                    }
+                    
+                    return `
+                        <div class="body-weight-entry">
+                            <div>
+                                <div class="body-weight-entry-date">${formattedDate}</div>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="body-weight-entry-value">${entry.weight.toFixed(1)} lbs${changeHtml}</div>
+                                <button class="body-weight-delete-btn" onclick="deleteBodyWeight(${originalIndex})" title="Delete">×</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function renderBodyWeightChart(bodyWeights) {
+            const canvas = document.getElementById('body-weight-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (bodyWeightChart) {
+                bodyWeightChart.destroy();
+            }
+            
+            if (bodyWeights.length === 0) {
+                // Don't replace the entire parent - just show message without destroying canvas
+                const container = canvas.parentElement;
+                const existingMsg = container.querySelector('.empty-chart-message');
+                if (!existingMsg) {
+                    const msg = document.createElement('div');
+                    msg.className = 'empty-chart-message';
+                    msg.style.cssText = 'text-align: center; color: var(--text-secondary); padding: 60px 20px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%;';
+                    msg.textContent = 'Log weight entries to see your progress chart';
+                    container.style.position = 'relative';
+                    container.appendChild(msg);
+                }
+                canvas.style.display = 'none';
+                return;
+            }
+            
+            // Remove empty message and show canvas
+            const container = canvas.parentElement;
+            const existingMsg = container.querySelector('.empty-chart-message');
+            if (existingMsg) {
+                existingMsg.remove();
+            }
+            canvas.style.display = 'block';
+            
+            // Show last 30 entries max
+            const recentWeights = bodyWeights.slice(-30);
+            
+            const isDark = document.body.classList.contains('dark-mode');
+            const textColor = isDark ? '#F1F5F9' : '#1E293B';
+            const gridColor = isDark ? '#334155' : '#E2E8F0';
+            
+            bodyWeightChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: recentWeights.map(w => new Date(w.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    })),
+                    datasets: [{
+                        label: 'Body Weight (lbs)',
+                        data: recentWeights.map(w => w.weight),
+                        borderColor: '#E87DAB',
+                        backgroundColor: 'rgba(232, 125, 171, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#E87DAB',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: textColor,
+                                font: { size: 11 },
+                                callback: function(value) {
+                                    return value.toFixed(1) + ' lbs';
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor,
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', init);
