@@ -63,13 +63,14 @@ body {
     box-shadow: 0 0 60px rgba(74, 144, 226, 0.08);
 }
 
-/* Top Header */
+/* Top Header (FIX: Set z-index lower than tab-bar) */
 .app-header {
     background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-lavender) 100%);
     color: white;
     padding: 24px 20px 64px 20px;
     text-align: center;
     position: relative;
+    z-index: 5;
 }
 
 .dark-mode-toggle {
@@ -103,7 +104,6 @@ body {
     letter-spacing: -0.02em;
 }
 
-/* RESTORED: app-subtitle style */
 .app-subtitle {
     font-size: 0.875rem;
     opacity: 0.92;
@@ -111,9 +111,7 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* REMOVED: Styles for #session-timer-display and .app-header.session-running */
-
-/* Tab Navigation */
+/* Tab Navigation (FIX: Ensure z-index is high) */
 .tab-bar {
     display: flex;
     background: var(--bg-card);
@@ -767,7 +765,7 @@ body {
     font-size: 0.875rem;
 }
 
-/* Charts View */
+/* Charts View (FIX: Allow horizontal scrolling for charts) */
 .chart-container {
     background: var(--bg-card);
     border: 1px solid var(--border-light);
@@ -775,6 +773,7 @@ body {
     padding: 24px;
     margin-bottom: 20px;
     box-shadow: 0 2px 12px rgba(74, 144, 226, 0.04);
+    overflow-x: auto;
 }
 
 .chart-title {
