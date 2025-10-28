@@ -27,6 +27,28 @@
             --error: #EF4444;
         }
 
+        /* Dark Mode */
+        body.dark-mode {
+            --primary-blue: #5BA3F5;
+            --primary-dark: #4A90E2;
+            --accent-rose: #F591BD;
+            --accent-lavender: #B399D1;
+            --accent-coral: #FFA89E;
+            --bg-light: #1E293B;
+            --bg-card: #0F172A;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --border-light: #334155;
+            --success: #34D399;
+            --warning: #FBBF24;
+            --error: #F87171;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
@@ -55,6 +77,29 @@
             padding: 24px 20px 64px 20px;
             text-align: center;
             position: relative;
+        }
+        
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
         
         .app-title {
@@ -951,7 +996,7 @@
         }
         
         .completion-content {
-            background: white;
+            background: var(--bg-card);
             border-radius: 24px;
             padding: 44px 32px;
             max-width: 380px;
@@ -959,6 +1004,59 @@
             text-align: center;
             position: relative;
             box-shadow: 0 24px 80px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* PR Celebration Modal */
+        .pr-celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .pr-celebration.active {
+            display: flex;
+        }
+        
+        .pr-celebration-content {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-light));
+            border-radius: 28px;
+            padding: 48px 36px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 28px 100px rgba(16, 185, 129, 0.3);
+            border: 2px solid var(--success);
+        }
+        
+        .pr-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pr-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--success), #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
         }
         
         .confetti {
@@ -1011,6 +1109,80 @@
             line-height: 1.6;
         }
 
+        /* Workout Rating */
+        .workout-rating {
+            margin: 24px 0;
+        }
+        
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        
+        .star {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--border-light);
+        }
+        
+        .star.active, .star:hover {
+            color: #F59E0B;
+            transform: scale(1.1);
+        }
+        
+        .workout-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        
+        .tag {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.813rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid var(--border-light);
+            color: var(--text-secondary);
+            background: var(--bg-card);
+        }
+        
+        .tag.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* Copy Last Button */
+        .copy-last-btn {
+            background: linear-gradient(135deg, var(--accent-lavender), var(--accent-rose));
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        
+        .copy-last-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(155, 126, 189, 0.3);
+        }
+        
+        .copy-last-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Info Box */
         .info-box {
             background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
@@ -1060,6 +1232,9 @@
     <div class="app-container">
         <!-- Header -->
         <div class="app-header">
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                <span id="dark-mode-icon">🌙</span>
+            </button>
             <div class="app-title">Jasmin's Workout Tracker</div>
             <div class="app-subtitle">High Intensity Training • Mentzer Protocol</div>
         </div>
@@ -1139,6 +1314,16 @@
                         <div class="stat-value" id="prs-count">0</div>
                         <div class="stat-label">Personal Records</div>
                     </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <button class="nav-btn nav-btn-secondary" style="flex: 1;" onclick="showBodyWeightLog()">
+                        📊 Body Weight
+                    </button>
+                    <button class="nav-btn nav-btn-secondary" style="flex: 1;" onclick="exportWorkoutData()">
+                        💾 Export Data
+                    </button>
                 </div>
 
                 <div class="content-card">
@@ -1617,9 +1802,39 @@
             <div class="completion-icon">🎉</div>
             <div class="completion-title">Workout Complete!</div>
             <div class="completion-stats" id="completion-stats"></div>
+            
+            <div class="workout-rating">
+                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">How did it feel?</div>
+                <div class="rating-stars" id="rating-stars">
+                    <span class="star" onclick="setRating(1)">★</span>
+                    <span class="star" onclick="setRating(2)">★</span>
+                    <span class="star" onclick="setRating(3)">★</span>
+                    <span class="star" onclick="setRating(4)">★</span>
+                    <span class="star" onclick="setRating(5)">★</span>
+                </div>
+                <div class="workout-tags" id="workout-tags">
+                    <span class="tag" onclick="toggleTag(this, 'strong')">💪 Felt Strong</span>
+                    <span class="tag" onclick="toggleTag(this, 'tired')">😴 Tired</span>
+                    <span class="tag" onclick="toggleTag(this, 'pr')">🏆 PR Day</span>
+                    <span class="tag" onclick="toggleTag(this, 'struggled')">😓 Struggled</span>
+                </div>
+            </div>
+            
             <div class="completion-quote">"The pain you feel today will be the strength you feel tomorrow"</div>
             <button class="nav-btn nav-btn-primary" style="width: 100%;" onclick="closeCompletionModal()">
                 Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- PR Celebration Modal -->
+    <div class="pr-celebration" id="pr-celebration">
+        <div class="pr-celebration-content">
+            <div class="pr-icon">🏆</div>
+            <div class="pr-title">NEW PERSONAL RECORD!</div>
+            <div id="pr-details" style="font-size: 1.125rem; color: var(--text-primary); margin: 20px 0;"></div>
+            <button class="nav-btn nav-btn-primary" style="width: 100%;" onclick="closePRCelebration()">
+                Amazing! 🎉
             </button>
         </div>
     </div>
@@ -1683,6 +1898,9 @@
         let timerRunning = false;
         let volumeChart = null;
         let exerciseCharts = [];
+        let currentWorkoutRating = 0;
+        let currentWorkoutTags = [];
+        let autoStartTimer = false;
 
         // Storage Helper
         const storage = {
@@ -1704,6 +1922,13 @@
         function init() {
             if (typeof Chart !== 'undefined') {
                 Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            }
+
+            // Load dark mode preference
+            const darkMode = storage.get('darkMode', false);
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('dark-mode-icon').textContent = '☀️';
             }
 
             document.getElementById('workout-date').valueAsDate = new Date();
@@ -1782,9 +2007,16 @@
             for (let i = 1; i <= numSets; i++) {
                 const setData = sessionData[exIdx]?.sets?.[i] || {};
                 const completed = setData.completed === true;
+                
+                // Check if there's previous data for this set
+                const hasPrevious = lastTime || pr;
+                
                 html += `
                     <div class="set-input ${completed ? 'completed' : ''}">
-                        <div class="set-label">Set ${i}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div class="set-label">Set ${i}</div>
+                            ${hasPrevious ? `<button class="copy-last-btn" onclick="copyLastWorkout(${exIdx}, ${i})">📋 Copy Last</button>` : ''}
+                        </div>
                         <div class="set-fields">
                             <div class="set-field">
                                 <label>Weight (lbs)</label>
@@ -1944,20 +2176,6 @@
             renderAnalytics();
             renderHistory();
             renderCalendar();
-        }
-
-        function updatePRs(exercises) {
-            const prs = storage.get('personalRecords', {});
-            
-            exercises.forEach(ex => {
-                Object.values(ex.sets).forEach(set => {
-                    if (!prs[ex.name] || set.tonnage > prs[ex.name].tonnage) {
-                        prs[ex.name] = {weight: set.weight, reps: set.reps, tonnage: set.tonnage};
-                    }
-                });
-            });
-
-            storage.set('personalRecords', prs);
         }
 
         function showCompletionModal(workout) {
@@ -2192,6 +2410,9 @@
             history.splice(workoutIndex, 1);
             storage.set('workoutHistory', history);
 
+            // Recalculate PRs since we removed the old workout
+            recalculateAllPRs();
+
             // Switch to track tab and render
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -2211,6 +2432,9 @@
             const history = storage.get('workoutHistory', []);
             history.splice(workoutIndex, 1);
             storage.set('workoutHistory', history);
+
+            // Recalculate PRs since we deleted a workout
+            recalculateAllPRs();
 
             // Update all views
             renderHistory();
@@ -2410,6 +2634,308 @@
                 });
                 exerciseCharts.push(chart);
             });
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('dark-mode-icon').textContent = isDark ? '☀️' : '🌙';
+            storage.set('darkMode', isDark);
+        }
+
+        // Copy Last Workout Data
+        function copyLastWorkout(exIdx, setNum) {
+            const exercise = workoutData[currentDay].exercises[exIdx];
+            const history = storage.get('workoutHistory', []);
+            
+            const lastWorkout = history.filter(w => 
+                w.exercises.some(e => e.name === exercise.name)
+            ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            
+            if (!lastWorkout) {
+                alert('No previous data found for this exercise');
+                return;
+            }
+            
+            const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
+            if (lastEx && lastEx.sets && lastEx.sets[setNum]) {
+                const lastSet = lastEx.sets[setNum];
+                document.getElementById(`weight-${exIdx}-${setNum}`).value = lastSet.weight;
+                document.getElementById(`reps-${exIdx}-${setNum}`).value = lastSet.reps;
+                handleInput(exIdx, setNum);
+            } else {
+                alert('No data for this set number in last workout');
+            }
+        }
+
+        // Workout Rating Functions
+        function setRating(rating) {
+            currentWorkoutRating = rating;
+            document.querySelectorAll('.star').forEach((star, idx) => {
+                if (idx < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function toggleTag(element, tag) {
+            element.classList.toggle('active');
+            const idx = currentWorkoutTags.indexOf(tag);
+            if (idx > -1) {
+                currentWorkoutTags.splice(idx, 1);
+            } else {
+                currentWorkoutTags.push(tag);
+            }
+        }
+
+        // PR Celebration
+        function checkAndCelebratePR(exercises) {
+            const prs = storage.get('personalRecords', {});
+            const newPRs = [];
+            
+            exercises.forEach(ex => {
+                Object.values(ex.sets).forEach(set => {
+                    const oldPR = prs[ex.name];
+                    if (!oldPR || set.tonnage > oldPR.tonnage) {
+                        if (oldPR) { // Only celebrate if beating an existing PR
+                            newPRs.push({
+                                exercise: ex.name,
+                                oldWeight: oldPR.weight,
+                                oldReps: oldPR.reps,
+                                newWeight: set.weight,
+                                newReps: set.reps
+                            });
+                        }
+                    }
+                });
+            });
+            
+            if (newPRs.length > 0) {
+                setTimeout(() => showPRCelebration(newPRs), 500);
+            }
+        }
+
+        function showPRCelebration(prs) {
+            const modal = document.getElementById('pr-celebration');
+            modal.classList.add('active');
+            
+            // Confetti
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                    modal.querySelector('.pr-celebration-content').appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 15);
+            }
+            
+            let html = '';
+            prs.forEach(pr => {
+                html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
+                    <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
+                    <div style="font-size: 0.938rem; color: var(--text-secondary);">
+                        Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
+                        <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('pr-details').innerHTML = html;
+            
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200, 100, 400]);
+            }
+        }
+
+        function closePRCelebration() {
+            document.getElementById('pr-celebration').classList.remove('active');
+        }
+
+        // Export Data
+        function exportWorkoutData() {
+            const history = storage.get('workoutHistory', []);
+            const prs = storage.get('personalRecords', {});
+            
+            if (history.length === 0) {
+                alert('No workout data to export yet!');
+                return;
+            }
+            
+            let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,Notes\n';
+            
+            history.forEach(workout => {
+                workout.exercises.forEach(ex => {
+                    Object.entries(ex.sets).forEach(([setNum, set]) => {
+                        csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},"${ex.notes || ''}"\n`;
+                    });
+                });
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `jasmin-workouts-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Body Weight Logging
+        function showBodyWeightLog() {
+            const weights = storage.get('bodyWeights', []);
+            const currentWeight = weights.length > 0 ? weights[weights.length - 1].weight : '';
+            
+            const newWeight = prompt('Enter your current body weight (lbs):', currentWeight);
+            
+            if (newWeight && !isNaN(newWeight) && parseFloat(newWeight) > 0) {
+                weights.push({
+                    date: new Date().toISOString().split('T')[0],
+                    weight: parseFloat(newWeight)
+                });
+                storage.set('bodyWeights', weights);
+                alert(`Body weight logged: ${newWeight} lbs`);
+            }
+        }
+
+        // Enhanced Update PRs with celebration check
+        function updatePRs(exercises) {
+            const prs = storage.get('personalRecords', {});
+            
+            exercises.forEach(ex => {
+                Object.values(ex.sets).forEach(set => {
+                    if (!prs[ex.name] || set.tonnage > prs[ex.name].tonnage) {
+                        prs[ex.name] = {weight: set.weight, reps: set.reps, tonnage: set.tonnage};
+                    }
+                });
+            });
+
+            storage.set('personalRecords', prs);
+            checkAndCelebratePR(exercises);
+        }
+
+        // Recalculate all PRs from workout history
+        function recalculateAllPRs() {
+            const history = storage.get('workoutHistory', []);
+            const prs = {};
+            
+            // Go through all workouts and find the best performance for each exercise
+            history.forEach(workout => {
+                workout.exercises.forEach(ex => {
+                    Object.values(ex.sets).forEach(set => {
+                        if (set.weight && set.reps) {
+                            const tonnage = set.weight * set.reps;
+                            if (!prs[ex.name] || tonnage > prs[ex.name].tonnage) {
+                                prs[ex.name] = {
+                                    weight: set.weight, 
+                                    reps: set.reps, 
+                                    tonnage: tonnage
+                                };
+                            }
+                        }
+                    });
+                });
+            });
+            
+            storage.set('personalRecords', prs);
+        }
+
+        // Enhanced Save Workout with rating/tags
+        function saveWorkout() {
+            const workout = workoutData[currentDay];
+            const date = document.getElementById('workout-date').value;
+
+            const exercises = workout.exercises.map((ex, idx) => ({
+                name: ex.name,
+                sets: sessionData[idx]?.sets || {},
+                notes: sessionData[idx]?.notes || ''
+            }));
+
+            const totalSets = exercises.reduce((sum, ex) => sum + Object.keys(ex.sets).length, 0);
+            const totalTonnage = exercises.reduce((sum, ex) => 
+                sum + Object.values(ex.sets).reduce((s, set) => s + (set.tonnage || 0), 0), 0
+            );
+
+            if (totalSets === 0) {
+                alert('No sets logged. Please add workout data first.');
+                return;
+            }
+
+            const workoutEntry = {
+                date,
+                day: currentDay,
+                name: workout.name,
+                exercises,
+                totalVolume: totalSets,
+                totalTonnage: totalTonnage,
+                rating: 0,
+                tags: []
+            };
+
+            const history = storage.get('workoutHistory', []);
+            history.push(workoutEntry);
+            storage.set('workoutHistory', history);
+
+            updatePRs(exercises);
+            showCompletionModal(workoutEntry);
+            
+            sessionData = {};
+            currentExerciseIndex = 0;
+            currentWorkoutRating = 0;
+            currentWorkoutTags = [];
+            renderExercise();
+            updateProgress();
+            renderAnalytics();
+            renderHistory();
+            renderCalendar();
+        }
+
+        // Enhanced Completion Modal
+        function showCompletionModal(workout) {
+            const modal = document.getElementById('completion-modal');
+            modal.classList.add('active');
+
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#4A90E2', '#9B7EBD', '#E87DAB', '#10B981'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.4 + 's';
+                    modal.querySelector('.completion-content').appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 25);
+            }
+
+            document.getElementById('completion-stats').innerHTML = `
+                <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
+                <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
+                <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
+                <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
+            `;
+            
+            // Reset rating
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        }
+
+        function closeCompletionModal() {
+            // Save rating and tags if provided
+            const history = storage.get('workoutHistory', []);
+            if (history.length > 0 && (currentWorkoutRating > 0 || currentWorkoutTags.length > 0)) {
+                history[history.length - 1].rating = currentWorkoutRating;
+                history[history.length - 1].tags = [...currentWorkoutTags];
+                storage.set('workoutHistory', history);
+            }
+            
+            document.getElementById('completion-modal').classList.remove('active');
         }
 
         document.addEventListener('DOMContentLoaded', init);
