@@ -46,7 +46,7 @@ body.dark-mode {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, var(--bg-light) 0%, #FFF5F9 100%); 
+    background: linear-gradient(135deg, #F0F4FF 0%, #FFF5F9 100%);
     background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
@@ -113,7 +113,7 @@ body {
 /* Tab Navigation */
 .tab-bar {
     display: flex;
-    background: var(--bg-card);
+    background: white;
     margin-top: -44px;
     margin-left: 16px;
     margin-right: 16px;
@@ -182,7 +182,7 @@ body {
     border-radius: 12px;
     font-size: 15px;
     font-weight: 500;
-    background: var(--bg-card);
+    background: white;
     color: var(--text-primary);
     transition: all 0.2s;
 }
@@ -217,7 +217,7 @@ body {
 }
 
 .progress-ring .bg-circle {
-    stroke: var(--border-light); 
+    stroke: #E2E8F0;
 }
 
 .progress-ring .progress-circle {
@@ -251,7 +251,7 @@ body {
 /* Exercise Card */
 .exercise-card {
     margin: 20px;
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -335,7 +335,7 @@ body {
 .pr-stat-value {
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--success);
+    color: #065F46;
 }
 
 /* Set Input */
@@ -390,7 +390,7 @@ body {
     font-size: 1.125rem;
     font-weight: 700;
     text-align: center;
-    background: var(--bg-card);
+    background: white;
     color: var(--text-primary);
     transition: all 0.2s;
 }
@@ -402,7 +402,7 @@ body {
 }
 
 .set-completed input {
-    background: var(--bg-card);
+    background: white;
     color: var(--success);
     border-color: #6EE7B7;
 }
@@ -427,8 +427,6 @@ body {
     font-family: 'Inter', sans-serif;
     resize: vertical;
     min-height: 70px;
-    background: var(--bg-card); 
-    color: var(--text-primary);
     transition: all 0.2s;
 }
 
@@ -469,7 +467,7 @@ body {
 }
 
 .nav-btn-secondary {
-    background: var(--bg-card);
+    background: white;
     color: var(--primary-blue);
     border: 1px solid var(--border-light);
 }
@@ -536,7 +534,7 @@ body {
 }
 
 .timer-modal-content {
-    background: var(--bg-card);
+    background: white;
     border-radius: 20px;
     padding: 36px;
     max-width: 360px;
@@ -577,7 +575,7 @@ body {
     padding: 10px 18px;
     border: 1px solid var(--border-light);
     border-radius: 10px;
-    background: var(--bg-card);
+    background: white;
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.875rem;
@@ -615,7 +613,7 @@ body {
 }
 
 .stat-card {
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 14px;
     padding: 20px;
@@ -637,7 +635,7 @@ body {
 }
 
 .content-card {
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -676,7 +674,7 @@ body {
 
 /* History View */
 .history-calendar {
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -746,7 +744,7 @@ body {
 
 /* Charts View */
 .chart-container {
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -769,7 +767,7 @@ body {
 
 /* Nutrition View */
 .macro-card {
-    background: var(--bg-card);
+    background: white;
     border: 1px solid var(--border-light);
     border-radius: 14px;
     padding: 20px;
@@ -887,7 +885,7 @@ body {
 .exercise-list-sets {
     font-weight: 700;
     color: var(--primary-blue);
-    background: var(--bg-card);
+    background: white;
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 0.813rem;
@@ -943,7 +941,7 @@ body {
 .supplement-dosage {
     font-size: 0.813rem;
     color: var(--text-secondary);
-    background: var(--bg-card);
+    background: white;
     padding: 4px 10px;
     border-radius: 6px;
 }
@@ -955,7 +953,7 @@ body {
 }
 
 .tips-list li {
-    background: var(--bg-card);
+    background: white;
     border-left: 3px solid var(--primary-blue);
     padding: 14px 16px;
     margin-bottom: 12px;
