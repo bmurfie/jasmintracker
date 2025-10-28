@@ -190,9 +190,33 @@ function loadWorkout() {
 
 function renderExercise() {
     const workout = workoutData[currentDay];
-    if (!workout) return;
+    const container = document.getElementById('current-exercise-container');
 
+    // FIX: Add check for exercises array existence and length
+    if (!workout || !workout.exercises || workout.exercises.length === 0) {
+        if (container) {
+            container.innerHTML = 
+            '<div class="exercise-card">' +
+                '<div style="text-align: center; color: var(--text-secondary); padding: 20px 0; font-weight: 600;">' +
+                'No exercises defined for this day. Check the Plan tab or select a different day.' +
+                '</div>' +
+            '</div>';
+        }
+        // Ensure progress reflects no sets to track
+        updateProgress();
+        return;
+    }
+
+    // Ensure index is valid after potential manipulation
+    if (currentExerciseIndex >= workout.exercises.length) {
+        currentExerciseIndex = workout.exercises.length - 1;
+    }
     const exercise = workout.exercises[currentExerciseIndex];
+    if (!exercise) {
+        if (container) container.innerHTML = '<div class="exercise-card"><div style="text-align: center; color: var(--error); padding: 20px 0;">Error loading exercise data.</div></div>';
+        return;
+    }
+    
     const exIdx = currentExerciseIndex;
     const numSets = parseInt(exercise.sets) || 1;
 
@@ -304,7 +328,6 @@ function renderExercise() {
         </div>
     </div>`;
 
-    const container = document.getElementById('current-exercise-container');
     if (container) container.innerHTML = html;
 }
 
@@ -1080,6 +1103,122 @@ function renderPlanTab() {
     planContainer.innerHTML = html;
 }
 
+function setRating(rating) {
+    currentWorkoutRating = rating;
+    document.querySelectorAll('.star').forEach((star, idx) => {
+        if (idx < rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function toggleTag(element, tag) {
+    element.classList.toggle('active');
+    const idx = currentWorkoutTags.indexOf(tag);
+    if (idx > -1) {
+        currentWorkoutTags.splice(idx, 1);
+    } else {
+        currentWorkoutTags.push(tag);
+    }
+}
+
+function showPRCelebration(prs) {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.add('active');
+
+    for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 15);
+    }
+    
+    let html = '';
+    prs.forEach(pr => {
+        html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
+            <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
+            <div style="font-size: 0.938rem; color: var(--text-secondary);">
+                Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
+                <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
+            </div>
+        </div>`;
+    });
+    
+    const details = document.getElementById('pr-details');
+    if (details) details.innerHTML = html;
+    
+    if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+}
+
+function closePRCelebration() {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.remove('active');
+}
+
+function exportWorkoutData() {
+    const history = storage.get('workoutHistory', []);
+    
+    if (history.length === 0) {
+        alert('No workout data to export yet!');
+        return;
+    }
+    
+    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n';
+    
+    history.forEach(workout => {
+        workout.exercises.forEach(ex => {
+            Object.entries(ex.sets).forEach(([setNum, set]) => {
+                if (set.weight > 0 && set.reps > 0) {
+                    csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},${set.e1rm || calculateE1RM(set.weight, set.reps)},"${ex.notes || ''}"\n`;
+                }
+            });
+        });
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `jasmin-workouts-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+function showBodyWeightLog() {
+    const weights = storage.get('bodyWeights', []);
+    const currentWeight = weights.length > 0 ? weights[weights.length - 1].weight : '';
+    
+    const newWeight = prompt('Enter your current body weight (lbs):', currentWeight);
+    
+    if (newWeight !== null && newWeight.trim() !== '' && !isNaN(newWeight) && parseFloat(newWeight) > 0) {
+        weights.push({
+            date: new Date().toISOString().split('T')[0],
+            weight: parseFloat(newWeight)
+        });
+        storage.set('bodyWeights', weights);
+        alert(`Body weight logged: ${newWeight} lbs`);
+        
+        const chartsTab = document.getElementById('charts-tab');
+        if (chartsTab?.classList.contains('active')) {
+            renderCharts();
+        }
+
+    } else if (newWeight !== null && newWeight.trim() !== '') {
+        alert('Invalid weight entered. Please enter a positive number.');
+    }
+}
+
 function updatePRs(exercises) {
     const prs = storage.get('personalRecords', {});
     
@@ -1162,7 +1301,6 @@ function showPRCelebration(prs) {
             confetti.className = 'confetti';
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
-            confetti.style.animationDelay = Math.random() * 0.3 + 's';
             modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
             setTimeout(() => confetti.remove(), 3000);
         }, i * 15);
