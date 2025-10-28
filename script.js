@@ -61,7 +61,6 @@ let weightChart = null;
 let exerciseCharts = [];
 let currentWorkoutRating = 0;
 let currentWorkoutTags = [];
-// REMOVED: sessionDurationSeconds, sessionDurationInterval state variables
 
 // Utility Functions
 
@@ -109,10 +108,6 @@ function autoAdvanceFocus(exIdx, setNum, isWeight) {
     const nextSetNum = setNum + 1;
     document.getElementById(`weight-${exIdx}-${nextSetNum}`)?.focus();
 }
-
-// REMOVED: updateSessionDurationDisplay()
-// REMOVED: startSessionTimer()
-// REMOVED: stopSessionTimer()
 
 // Centralized Event Listener Setup
 function setupEventListeners() {
@@ -459,7 +454,6 @@ function saveWorkout() {
         exercises,
         totalVolume: totalSets,
         totalTonnage: totalTonnage,
-        // Removed duration property and related calls
         rating: 0,
         tags: []
     };
@@ -505,7 +499,7 @@ function showCompletionModal(workout) {
             <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
             <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
             <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
-            `;
+        `;
     }
     
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
@@ -815,17 +809,18 @@ function renderCharts() {
     function manageChartContainer(canvasId, title, hasData) {
         const containerId = `${canvasId}-container`;
         const container = document.getElementById(containerId);
-        const canvas = document.getElementById(canvasId);
+        let canvas = document.getElementById(canvasId);
         
         if (!container || !canvas) return null;
 
-        // Check for placeholder, create if missing (ensuring robustness)
+        // Check for placeholder, create if missing
         let placeholder = container.querySelector('.chart-placeholder');
         if (!placeholder) {
             placeholder = document.createElement('div');
             placeholder.className = 'chart-placeholder';
             placeholder.style.cssText = 'text-align: center; color: var(--text-secondary); padding: 40px 20px;';
-            container.appendChild(placeholder);
+            // Insert placeholder right before the canvas
+            container.insertBefore(placeholder, canvas); 
         }
 
         if (hasData) {
@@ -1085,122 +1080,6 @@ function renderPlanTab() {
     planContainer.innerHTML = html;
 }
 
-function setRating(rating) {
-    currentWorkoutRating = rating;
-    document.querySelectorAll('.star').forEach((star, idx) => {
-        if (idx < rating) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-}
-
-function toggleTag(element, tag) {
-    element.classList.toggle('active');
-    const idx = currentWorkoutTags.indexOf(tag);
-    if (idx > -1) {
-        currentWorkoutTags.splice(idx, 1);
-    } else {
-        currentWorkoutTags.push(tag);
-    }
-}
-
-function showPRCelebration(prs) {
-    const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.add('active');
-
-    for (let i = 0; i < 60; i++) {
-        setTimeout(() => {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
-            confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 3000);
-        }, i * 15);
-    }
-    
-    let html = '';
-    prs.forEach(pr => {
-        html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
-            <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
-            <div style="font-size: 0.938rem; color: var(--text-secondary);">
-                Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
-                <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
-            </div>
-        </div>`;
-    });
-    
-    const details = document.getElementById('pr-details');
-    if (details) details.innerHTML = html;
-    
-    if ('vibrate' in navigator) {
-        navigator.vibrate([200, 100, 200, 100, 400]);
-    }
-}
-
-function closePRCelebration() {
-    const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.remove('active');
-}
-
-function exportWorkoutData() {
-    const history = storage.get('workoutHistory', []);
-    
-    if (history.length === 0) {
-        alert('No workout data to export yet!');
-        return;
-    }
-    
-    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n';
-    
-    history.forEach(workout => {
-        workout.exercises.forEach(ex => {
-            Object.entries(ex.sets).forEach(([setNum, set]) => {
-                if (set.weight > 0 && set.reps > 0) {
-                    csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},${set.e1rm || calculateE1RM(set.weight, set.reps)},"${ex.notes || ''}"\n`;
-                }
-            });
-        });
-    });
-    
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `jasmin-workouts-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-}
-
-function showBodyWeightLog() {
-    const weights = storage.get('bodyWeights', []);
-    const currentWeight = weights.length > 0 ? weights[weights.length - 1].weight : '';
-    
-    const newWeight = prompt('Enter your current body weight (lbs):', currentWeight);
-    
-    if (newWeight !== null && newWeight.trim() !== '' && !isNaN(newWeight) && parseFloat(newWeight) > 0) {
-        weights.push({
-            date: new Date().toISOString().split('T')[0],
-            weight: parseFloat(newWeight)
-        });
-        storage.set('bodyWeights', weights);
-        alert(`Body weight logged: ${newWeight} lbs`);
-        
-        const chartsTab = document.getElementById('charts-tab');
-        if (chartsTab?.classList.contains('active')) {
-            renderCharts();
-        }
-
-    } else if (newWeight !== null && newWeight.trim() !== '') {
-        alert('Invalid weight entered. Please enter a positive number.');
-    }
-}
-
 function updatePRs(exercises) {
     const prs = storage.get('personalRecords', {});
     
@@ -1247,6 +1126,70 @@ function recalculateAllPRs() {
     });
     
     storage.set('personalRecords', prs);
+}
+
+function checkAndCelebratePR(exercises) {
+    const prs = storage.get('personalRecords', {});
+    const newPRs = [];
+    
+    exercises.forEach(ex => {
+        Object.values(ex.sets).forEach(set => {
+            const oldPR = prs[ex.name];
+            if (oldPR && set.tonnage > oldPR.tonnage) { 
+                newPRs.push({
+                    exercise: ex.name,
+                    oldWeight: oldPR.weight,
+                    oldReps: oldPR.reps,
+                    newWeight: set.weight,
+                    newReps: set.reps
+                });
+            }
+        });
+    });
+    
+    if (newPRs.length > 0) {
+        setTimeout(() => showPRCelebration(newPRs), 500);
+    }
+}
+
+function showPRCelebration(prs) {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.add('active');
+
+    for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 15);
+    }
+    
+    let html = '';
+    prs.forEach(pr => {
+        html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
+            <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
+            <div style="font-size: 0.938rem; color: var(--text-secondary);">
+                Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
+                <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
+            </div>
+        </div>`;
+    });
+    
+    const details = document.getElementById('pr-details');
+    if (details) details.innerHTML = html;
+    
+    if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+}
+
+function closePRCelebration() {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.remove('active');
 }
 
 document.addEventListener('DOMContentLoaded', init);
