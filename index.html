@@ -124,7 +124,6 @@
                     <div class="chart-title">Body Weight Trend</div>
                     <canvas id="weight-chart" class="chart-canvas"></canvas>
                 </div>
-                
                 <div class="chart-container">
                     <div class="chart-title">Workout Volume Trend</div>
                     <canvas id="volume-chart" class="chart-canvas"></canvas>
@@ -134,9 +133,408 @@
             </div>
         </div>
 
-        <div id="nutrition-tab" class="tab-content">...</div>
+        <div id="nutrition-tab" class="tab-content">
+            <div class="nutrition-section">
+                <div class="content-card">
+                    <div class="content-card-title">Daily Macronutrients</div>
+                    
+                    <div class="macro-card macro-protein">
+                        <div class="macro-header">
+                            <div class="macro-name">Protein</div>
+                            <div class="macro-value">130-150g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 40%;"></div>
+                        </div>
+                        <div class="macro-subtext">520-600 calories • Muscle repair & growth</div>
+                    </div>
 
-        <div id="plan-tab" class="tab-content">...</div>
+                    <div class="macro-card macro-carbs">
+                        <div class="macro-header">
+                            <div class="macro-name">Carbohydrates</div>
+                            <div class="macro-value">180-220g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="macro-subtext">720-880 calories • Energy & performance</div>
+                    </div>
+
+                    <div class="macro-card macro-fats">
+                        <div class="macro-header">
+                            <div class="macro-name">Healthy Fats</div>
+                            <div class="macro-value">50-65g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 30%;"></div>
+                        </div>
+                        <div class="macro-subtext">450-585 calories • Hormones & recovery</div>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 20px;">
+                        <div class="info-box-title">
+                            <span>📊</span>
+                            <span>Daily Total</span>
+                        </div>
+                        <div class="info-box-content">
+                            <strong>1,690 - 2,065 calories per day</strong><br>
+                            Adjust based on activity level and goals
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="content-card-title">Meal Timing Strategy</div>
+                    
+                    <div class="tips-list">
+                        <li>
+                            <strong>Pre-Workout (1-2 hours before)</strong>
+                            Complex carbs + lean protein. Examples: Oatmeal with protein powder, banana, or rice with chicken breast.
+                        </li>
+                        <li>
+                            <strong>Post-Workout (within 30 minutes)</strong>
+                            Fast-digesting protein + simple carbs. Examples: Whey protein shake with fruit or rice cakes.
+                        </li>
+                        <li>
+                            <strong>Main Meals (3-4 per day)</strong>
+                            Balanced portions of protein, complex carbs, healthy fats, and vegetables.
+                        </li>
+                        <li>
+                            <strong>Evening Meal</strong>
+                            Higher protein, moderate fats, lower carbs to support overnight recovery.
+                        </li>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="content-card-title">Hydration Goals</div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <span style="font-size: 1.5rem;">💧</span>
+                            <span>Daily Water Intake</span>
+                        </div>
+                        <div class="info-box-content">
+                            <strong style="font-size: 1.125rem; display: block; margin-bottom: 8px;">2.5 - 3.0 Liters</strong>
+                            Increase on workout days and during hot weather. Hydrate consistently throughout the day.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="content-card-title">Sample Daily Meal Plan</div>
+                    
+                    <table class="nutrition-table">
+                        <thead>
+                            <tr>
+                                <th>Meal</th>
+                                <th>Foods</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Breakfast</strong></td>
+                                <td>3 egg whites + 1 whole egg, oatmeal with berries, Greek yogurt</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lunch</strong></td>
+                                <td>Grilled chicken breast, quinoa, roasted vegetables, avocado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Snack</strong></td>
+                                <td>Protein shake, rice cakes with almond butter</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dinner</strong></td>
+                                <td>Salmon or lean beef, sweet potato, steamed broccoli, olive oil</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Evening</strong></td>
+                                <td>Casein protein shake or cottage cheese (optional)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-card">
+                    <div class="content-card-title">Supplement Protocol</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Morning</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">💊</div>
+                                <span class="supplement-name">Multivitamin</span>
+                                <span class="supplement-dosage">1 tablet</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">☀️</div>
+                                <span class="supplement-name">Vitamin D3</span>
+                                <span class="supplement-dosage">2,000 IU</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🐟</div>
+                                <span class="supplement-name">Omega-3 Fish Oil</span>
+                                <span class="supplement-dosage">1-2g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Pre-Workout (30 min before)</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">☕</div>
+                                <span class="supplement-name">Caffeine</span>
+                                <span class="supplement-dosage">200mg</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">⚡</div>
+                                <span class="supplement-name">Creatine Monohydrate</span>
+                                <span class="supplement-dosage">5g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🔥</div>
+                                <span class="supplement-name">Beta-Alanine</span>
+                                <span class="supplement-dosage">3-4g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">💪</div>
+                                <span class="supplement-name">Citrulline Malate</span>
+                                <span class="supplement-dosage">6-8g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Post-Workout</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">🥛</div>
+                                <span class="supplement-name">Whey Protein Isolate</span>
+                                <span class="supplement-dosage">25-30g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🔗</div>
+                                <span class="supplement-name">BCAAs (optional)</span>
+                                <span class="supplement-dosage">5g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Evening</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">🌙</div>
+                                <span class="supplement-name">Magnesium Glycinate</span>
+                                <span class="supplement-dosage">400mg</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">😴</div>
+                                <span class="supplement-name">Casein Protein (optional)</span>
+                                <span class="supplement-dosage">20-30g</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="plan-tab" class="tab-content">
+            <div class="plan-section">
+                <div class="content-card">
+                    <div class="content-card-title">7-Day Training Split</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Day 1: Quad Focus (Monday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Leg Extension <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hack Squat or Leg Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Bulgarian Split Squat <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Sissy Squat <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 2: Hamstring Stretch (Tuesday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Lying Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Romanian Deadlift <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Seated Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Glute-Ham Raise <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 3: Rest Day (Wednesday)</h4>
+                        <div class="rest-day">Active Recovery: Light stretching, yoga, or walking</div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 4: Glute Focus (Thursday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hip Thrust <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Smith Machine Reverse Lunge <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Cable Kickback <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Abductor Machine <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 5: Upper Body Push/Pull (Friday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Chest Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Cable Row <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Shoulder Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Bicep Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 6: Abs & Core (Saturday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Plank Hold <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × 60s</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Russian Twists <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hanging Leg Raises <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Mountain Climbers <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 7: Rest Day (Sunday)</h4>
+                        <div class="rest-day">Full Recovery: Focus on nutrition, sleep, and hydration</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="content-card-title">Movement & Form Guidelines</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Mind-Muscle Connection</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>Visualize the Target</strong>
+                                Before each rep, mentally picture the muscle contracting and stretching under tension.
+                            </li>
+                            <li>
+                                <strong>Controlled Tempo</strong>
+                                Use a 2-1-2 tempo: 2 seconds lowering, 1 second squeeze, 2 seconds lifting.
+                            </li>
+                            <li>
+                                <strong>Focus on Sensation</strong>
+                                Concentrate on feeling the muscle work, not just moving the weight from point A to B.
+                            </li>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Essential Form Cues</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>Leg Exercises</strong>
+                                Core engaged, knees tracking over toes, full range of motion, maintain neutral spine.
+                            </li>
+                            <li>
+                                <strong>Upper Body</strong>
+                                Shoulders back and down, chest up, controlled breathing, stable core throughout.
+                            </li>
+                            <li>
+                                <strong>Hip Thrusts</strong>
+                                Squeeze glutes at top, keep ribs down, posterior pelvic tilt, full hip extension.
+                            </li>
+                            <li>
+                                <strong>Core Work</strong>
+                                Brace abs as if taking a punch, breathe through nose, maintain neutral spine position.
+                            </li>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Breathing Technique</h4>
+                        <div class="info-box">
+                            <div class="info-box-title">
+                                <span>🫁</span>
+                                <span>Proper Breathing Pattern</span>
+                            </div>
+                            <div class="info-box-content">
+                                <strong>Eccentric (lowering):</strong> Breathe IN deeply through nose<br>
+                                <strong>Concentric (lifting):</strong> Breathe OUT forcefully through mouth<br>
+                                <strong>Peak contraction:</strong> Hold breath and squeeze for 1 second
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Training to Failure</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>True Muscular Failure</strong>
+                                Cannot complete another rep with proper form despite maximum effort.
+                            </li>
+                            <li>
+                                <strong>Form Breakdown = Stop</strong>
+                                End the set immediately if technique deteriorates. Injury prevention is priority.
+                            </li>
+                            <li>
+                                <strong>Positive Failure</strong>
+                                For safety on certain exercises, stop when you can't lift the weight (before lowering phase).
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="floating-timer" onclick="openTimer()">
