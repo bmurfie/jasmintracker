@@ -57,17 +57,15 @@ let timerInterval = null;
 let timerSeconds = 180;
 let timerRunning = false;
 let volumeChart = null;
-let weightChart = null; // NEW chart state
+let weightChart = null; 
 let exerciseCharts = [];
 let currentWorkoutRating = 0;
 let currentWorkoutTags = [];
 
-// Utility Functions (Refactored for maintainability)
-
-// NEW: E1RM Calculator (Brzycki Formula)
+// E1RM Calculator (Brzycki Formula)
 function calculateE1RM(weight, reps) {
     if (reps === 1) return weight;
-    if (reps > 15) return 0; // Formula is unreliable above ~10-15 reps
+    if (reps > 15 || weight === 0 || reps === 0) return 0;
     return Math.round(weight / (1.0278 - 0.0278 * reps));
 }
 
@@ -99,11 +97,8 @@ const storage = {
     }
 };
 
-// NEW: Auto-Focus Utility
+// Auto-Focus Utility
 function autoAdvanceFocus(exIdx, setNum, isWeight) {
-    const nextFieldType = isWeight ? 'reps' : 'weight';
-    const nextSetNum = isWeight ? setNum : setNum + 1;
-    
     // 1. Focus on reps field
     if (isWeight) {
         document.getElementById(`reps-${exIdx}-${setNum}`).focus();
@@ -111,35 +106,45 @@ function autoAdvanceFocus(exIdx, setNum, isWeight) {
     }
 
     // 2. Focus on next set's weight field
+    const nextSetNum = setNum + 1;
     const nextWeightField = document.getElementById(`weight-${exIdx}-${nextSetNum}`);
     if (nextWeightField) {
         nextWeightField.focus();
     }
 }
 
-// Event Listeners (Setup is clean)
+// Centralized Event Listener Setup
 function setupEventListeners() {
+    // Tab Switching 
     document.querySelectorAll('.tab-bar .tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const tabName = btn.getAttribute('data-tab');
-            if (tabName) switchTab(tabName);
+            if (tabName) switchTab(tabName, btn);
         });
     });
 
+    // Dark Mode Toggle
     document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
-    document.getElementById('save-workout-btn').addEventListener('click', saveWorkout);
-    document.getElementById('log-body-weight-btn').addEventListener('click', showBodyWeightLog);
-    document.getElementById('export-data-btn').addEventListener('click', exportWorkoutData);
+
+    // Save Workout Button
+    const saveBtn = document.getElementById('save-workout-btn');
+    if (saveBtn) saveBtn.addEventListener('click', saveWorkout);
+
+    // Analytics Quick Actions
+    const logWeightBtn = document.getElementById('log-body-weight-btn');
+    if (logWeightBtn) logWeightBtn.addEventListener('click', showBodyWeightLog);
+
+    const exportBtn = document.getElementById('export-data-btn');
+    if (exportBtn) exportBtn.addEventListener('click', exportWorkoutData);
     
+    // Day Select Change
     document.getElementById('day-select').addEventListener('change', (e) => {
         currentDay = e.target.value;
         loadWorkout();
     });
 }
 
-
-// Core App Logic
-
+// Initialize
 function init() {
     if (typeof Chart !== 'undefined') {
         Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
@@ -148,14 +153,19 @@ function init() {
     const darkMode = storage.get('darkMode', false);
     if (darkMode) {
         document.body.classList.add('dark-mode');
-        document.getElementById('dark-mode-icon').textContent = '☀️';
+        const icon = document.getElementById('dark-mode-icon');
+        if (icon) icon.textContent = '☀️';
     }
 
-    document.getElementById('workout-date').valueAsDate = new Date();
+    const dateInput = document.getElementById('workout-date');
+    if (dateInput) dateInput.valueAsDate = new Date();
+    
     const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
     const dayMap = {Monday: 'day1', Tuesday: 'day2', Thursday: 'day4', Friday: 'day5', Saturday: 'day6'};
     currentDay = dayMap[today] || 'day1';
-    document.getElementById('day-select').value = currentDay;
+    
+    const daySelect = document.getElementById('day-select');
+    if (daySelect) daySelect.value = currentDay;
     
     setupEventListeners();
 
@@ -189,11 +199,12 @@ function renderExercise() {
         w.exercises.some(e => e.name === exercise.name)
     ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
     
-    let lastTime = null;
+    let lastSetData = null;
     if (lastWorkout) {
         const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
         if (lastEx && lastEx.sets && Object.keys(lastEx.sets).length > 0) {
-            lastTime = Object.values(lastEx.sets).sort((a, b) => b.tonnage - a.tonnage)[0]; // Use best set from last workout
+            // Use best set (by tonnage) from last workout for display/copy
+            lastSetData = Object.values(lastEx.sets).sort((a, b) => b.tonnage - a.tonnage)[0];
         }
     }
 
@@ -210,15 +221,16 @@ function renderExercise() {
             </div>
     `;
 
-    if (pr || lastTime) {
+    if (pr || lastSetData) {
         html += `<div class="pr-display"><div class="pr-display-title">Your Stats</div><div class="pr-display-stats">`;
-        if (lastTime) {
-            const e1rm = calculateE1RM(lastTime.weight, lastTime.reps);
-            html += `<div class="pr-stat"><div class="pr-stat-label">Last Set</div><div class="pr-stat-value">${lastTime.weight} × ${lastTime.reps}</div></div>`;
+        
+        if (lastSetData) {
+            const e1rm = calculateE1RM(lastSetData.weight, lastSetData.reps);
+            html += `<div class="pr-stat"><div class="pr-stat-label">Last Set</div><div class="pr-stat-value">${lastSetData.weight} × ${lastSetData.reps}</div></div>`;
             if(e1rm > 0) html += `<div class="pr-stat"><div class="pr-stat-label">Last E1RM</div><div class="pr-stat-value">${e1rm} lbs</div></div>`;
         }
         if (pr) {
-            const e1rm = calculateE1RM(pr.weight, pr.reps);
+            const e1rm = pr.e1rm || calculateE1RM(pr.weight, pr.reps);
             html += `<div class="pr-stat"><div class="pr-stat-label">Your PR</div><div class="pr-stat-value">${pr.weight} × ${pr.reps}</div></div>`;
             if(e1rm > 0) html += `<div class="pr-stat"><div class="pr-stat-label">PR E1RM</div><div class="pr-stat-value">${e1rm} lbs</div></div>`;
         }
@@ -229,8 +241,7 @@ function renderExercise() {
         const setData = sessionData[exIdx]?.sets?.[i] || {};
         const completed = setData.completed === true;
         
-        // Check if there's previous data for this set
-        const hasPrevious = lastTime || pr;
+        const hasPrevious = lastSetData || pr;
         
         html += `
             <div class="set-input ${completed ? 'completed' : ''}">
@@ -269,38 +280,34 @@ function renderExercise() {
         </div>
     </div>`;
 
-    document.getElementById('current-exercise-container').innerHTML = html;
+    const container = document.getElementById('current-exercise-container');
+    if (container) container.innerHTML = html;
 }
 
-// UPDATED: handleInput with auto-focus and E1RM calculation
 function handleInput(exIdx, setNum, isWeightInput) {
     if (!sessionData[exIdx]) sessionData[exIdx] = {sets: {}, notes: ''};
     
     const weightEl = document.getElementById(`weight-${exIdx}-${setNum}`);
     const repsEl = document.getElementById(`reps-${exIdx}-${setNum}`);
     
-    const weight = parseFloat(weightEl.value) || 0;
-    const reps = parseInt(repsEl.value) || 0;
+    const weight = parseFloat(weightEl?.value) || 0;
+    const reps = parseInt(repsEl?.value) || 0;
     
     const tonnage = weight * reps;
     const e1rm = calculateE1RM(weight, reps);
 
     if (weight > 0 && reps > 0) {
         sessionData[exIdx].sets[setNum] = {weight, reps, tonnage, e1rm, completed: false};
-        // Auto-focus logic
         autoAdvanceFocus(exIdx, setNum, isWeightInput);
     } else if (weight || reps) {
-        // Partial data
         sessionData[exIdx].sets[setNum] = {weight: weight, reps: reps, tonnage: 0, e1rm: 0, completed: false};
     } else {
-        // Empty fields - remove set data if it exists
         if (sessionData[exIdx].sets[setNum]) {
             delete sessionData[exIdx].sets[setNum];
         }
     }
 }
 
-// UPDATED: nextExercise now integrates the timer
 function nextExercise() {
     const workout = workoutData[currentDay];
     const notes = document.getElementById(`notes-${currentExerciseIndex}`);
@@ -309,7 +316,6 @@ function nextExercise() {
         sessionData[currentExerciseIndex].notes = notes.value;
     }
 
-    // Mark current exercise as completed
     let anySetLogged = false;
     if (sessionData[currentExerciseIndex]?.sets) {
         Object.keys(sessionData[currentExerciseIndex].sets).forEach(setNum => {
@@ -326,15 +332,15 @@ function nextExercise() {
     if (currentExerciseIndex < workout.exercises.length - 1) {
         currentExerciseIndex++;
         renderExercise();
-        // NEW: Auto-start timer after completing an exercise
+        
+        // Auto-start timer after completing an exercise
         if (anySetLogged) {
-            stopTimer(); // Ensure any existing timer is cleared
-            setRestTime(180); // Reset to default 3:00
+            stopTimer(); 
+            setRestTime(180); 
             startTimer();
         }
     } else {
-        // Last exercise: save the workout
-        document.getElementById('save-workout-btn').click();
+        document.getElementById('save-workout-btn')?.click();
     }
 }
 
@@ -365,263 +371,26 @@ function updateProgress() {
     const circumference = 2 * Math.PI * 58;
     const offset = circumference - (percentage / 100) * circumference;
 
-    document.getElementById('progress-circle').style.strokeDashoffset = offset;
-    document.getElementById('progress-text').textContent = `${completedSets}/${totalSets}`;
+    const circle = document.getElementById('progress-circle');
+    if (circle) circle.style.strokeDashoffset = offset;
+    
+    const text = document.getElementById('progress-text');
+    if (text) text.textContent = `${completedSets}/${totalSets}`;
+
+    const label = document.getElementById('progress-label');
+    const sublabel = document.getElementById('progress-sublabel');
 
     if (completedSets === 0) {
-        document.getElementById('progress-label').textContent = "Ready to Begin";
-        document.getElementById('progress-sublabel').textContent = `${workout.exercises.length} exercises today`;
+        if (label) label.textContent = "Ready to Begin";
+        if (sublabel) sublabel.textContent = `${workout.exercises.length} exercises today`;
     } else if (completedSets >= totalSets) { 
-        document.getElementById('progress-label').textContent = "Workout Complete";
-        document.getElementById('progress-sublabel').textContent = "Ready to save";
+        if (label) label.textContent = "Workout Complete";
+        if (sublabel) sublabel.textContent = "Ready to save";
     } else {
-        document.getElementById('progress-label').textContent = `${Math.round(percentage)}% Complete`;
-        document.getElementById('progress-sublabel').textContent = `${totalSets - completedSets} sets remaining`;
+        if (label) label.textContent = `${Math.round(percentage)}% Complete`;
+        if (sublabel) sublabel.textContent = `${totalSets - completedSets} sets remaining`;
     }
 }
-
-// Timer Functions
-function startTimer() {
-    timerRunning = true;
-    document.getElementById('timer-start-btn').textContent = 'Pause';
-    document.querySelector('.timer-display').classList.add('running');
-    document.querySelector('.floating-timer').classList.add('running');
-
-    timerInterval = setInterval(() => {
-        timerSeconds--;
-        updateTimerDisplay();
-
-        if (timerSeconds <= 0) {
-            stopTimer();
-            alert('Rest period complete!');
-            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
-            timerSeconds = 180;
-            setRestTime(180);
-            updateTimerDisplay();
-        }
-    }, 1000);
-}
-
-function stopTimer() {
-    timerRunning = false;
-    clearInterval(timerInterval);
-    document.getElementById('timer-start-btn').textContent = 'Start';
-    document.querySelector('.timer-display').classList.remove('running');
-    document.querySelector('.floating-timer').classList.remove('running');
-}
-
-// UPDATED: renderCharts to include E1RM and Body Weight charts
-function renderCharts() {
-    const history = storage.get('workoutHistory', []);
-    const bodyWeights = storage.get('bodyWeights', []).sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    // --- 1. Body Weight Chart ---
-    const weightCtx = document.getElementById('weight-chart');
-    if (weightChart) weightChart.destroy();
-
-    if (bodyWeights.length > 0) {
-        weightChart = new Chart(weightCtx.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: bodyWeights.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
-                datasets: [{
-                    label: 'Body Weight (lbs)',
-                    data: bodyWeights.map(d => d.weight),
-                    borderColor: '#E87DAB', // Accent Rose
-                    backgroundColor: 'rgba(232, 125, 171, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#E87DAB',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false, } },
-                scales: {
-                    y: { beginAtZero: false, ticks: { color: '#64748B' } },
-                    x: { ticks: { color: '#64748B' } }
-                }
-            }
-        });
-    } else {
-        weightCtx.parentElement.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">Log body weight on the Stats tab to see this chart.</div>';
-    }
-
-
-    if (history.length === 0) {
-        document.getElementById('volume-chart').parentElement.innerHTML = 
-            '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">Log workouts to see progress charts</div>';
-        document.getElementById('exercise-charts-container').innerHTML = '';
-        return;
-    }
-
-    // --- 2. Workout Volume Chart ---
-    const sortedHistory = history.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-    const labels = sortedHistory.map(w => new Date(w.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}));
-    const data = sortedHistory.map(w => w.totalVolume);
-
-    const ctx = document.getElementById('volume-chart');
-    const chartCtx = ctx.getContext('2d');
-    if (volumeChart) volumeChart.destroy();
-
-    volumeChart = new Chart(chartCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Total Sets',
-                data: data,
-                borderColor: '#4A90E2',
-                backgroundColor: 'rgba(74, 144, 226, 0.08)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 5,
-                pointBackgroundColor: '#4A90E2',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748B', font: { size: 11 } } },
-                x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
-            }
-        }
-    });
-
-    // --- 3. Exercise E1RM/Tonnage Charts ---
-    const exerciseData = {};
-    history.forEach(w => {
-        w.exercises.forEach(ex => {
-            if (!exerciseData[ex.name]) exerciseData[ex.name] = [];
-            
-            // Find the highest E1RM from any set in this exercise for this date
-            const bestSet = Object.values(ex.sets).reduce((best, set) => 
-                set.e1rm > best.e1rm ? set : best, {e1rm: 0});
-            
-            if (bestSet.e1rm > 0) {
-                const existing = exerciseData[ex.name].find(d => d.date === w.date);
-                if (!existing || bestSet.e1rm > existing.e1rm) {
-                    if (existing) {
-                        existing.e1rm = bestSet.e1rm;
-                    } else {
-                        exerciseData[ex.name].push({date: w.date, e1rm: bestSet.e1rm});
-                    }
-                }
-            }
-        });
-    });
-
-    const exerciseFreq = Object.keys(exerciseData).map(name => ({
-        name,
-        count: exerciseData[name].length
-    })).sort((a, b) => b.count - a.count).slice(0, 4);
-
-    const container = document.getElementById('exercise-charts-container');
-    container.innerHTML = '';
-    exerciseCharts.forEach(c => c.destroy());
-    exerciseCharts = [];
-
-    const colors = ['#4A90E2', '#9B7EBD', '#10B981', '#F59E0B'];
-
-    exerciseFreq.forEach((ex, idx) => {
-        const exData = exerciseData[ex.name].sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        const chartDiv = document.createElement('div');
-        chartDiv.className = 'chart-container';
-        chartDiv.innerHTML = `
-            <div class="chart-title">${ex.name} (Estimated 1RM Trend)</div>
-            <canvas id="ex-chart-${idx}" class="chart-canvas"></canvas>
-        `;
-        container.appendChild(chartDiv);
-
-        const ctx = document.getElementById(`ex-chart-${idx}`);
-        if (!ctx) return;
-        
-        const chartCtx = ctx.getContext('2d');
-        const chart = new Chart(chartCtx, {
-            type: 'line',
-            data: {
-                labels: exData.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
-                datasets: [{
-                    label: 'Estimated 1RM (lbs)',
-                    data: exData.map(d => d.e1rm),
-                    borderColor: colors[idx],
-                    backgroundColor: `${colors[idx]}15`,
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointBackgroundColor: colors[idx],
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 7
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { color: '#64748B', font: { size: 11 } } },
-                    x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
-                }
-            }
-        });
-        exerciseCharts.push(chart);
-    });
-}
-
-// UPDATED: copyLastWorkout with smart progressive overload logic
-function copyLastWorkout(exIdx, setNum) {
-    const exercise = workoutData[currentDay].exercises[exIdx];
-    const history = storage.get('workoutHistory', []);
-    
-    const lastWorkout = history.filter(w => 
-        w.exercises.some(e => e.name === exercise.name)
-    ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-    
-    if (!lastWorkout) {
-        alert('No previous data found for this exercise');
-        return;
-    }
-    
-    const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
-    
-    // Find the single best set from the last workout
-    const bestSet = Object.values(lastEx.sets).reduce((best, set) => 
-        set.tonnage > best.tonnage ? set : best, {weight: 0, reps: 0});
-
-    if (bestSet.weight > 0) {
-        // Smart Copy Logic: Attempt to add 2.5 lbs (standard progressive overload)
-        const smartWeight = bestSet.weight + 2.5;
-        
-        document.getElementById(`weight-${exIdx}-${setNum}`).value = smartWeight.toFixed(1);
-        document.getElementById(`reps-${exIdx}-${setNum}`).value = bestSet.reps;
-        
-        // Use the smart weight input to trigger the handler and auto-focus
-        handleInput(exIdx, setNum, true); 
-
-        // Stop the timer and reset it, as the user is starting a new set
-        stopTimer(); 
-        setRestTime(180);
-        updateTimerDisplay();
-
-    } else {
-        alert('No usable data found in the last workout.');
-    }
-}
-
-// The remaining utility functions (saveWorkout, editWorkout, deleteWorkout, toggleDarkMode, etc.) 
-// are kept from the previous version, as their core logic (using IDs for robustness) is sound.
 
 function saveWorkout() {
     const workout = workoutData[currentDay];
@@ -664,6 +433,7 @@ function saveWorkout() {
     updatePRs(exercises);
     showCompletionModal(workoutEntry);
     
+    // Reset session state
     sessionData = {};
     currentExerciseIndex = 0;
     currentWorkoutRating = 0;
@@ -677,7 +447,7 @@ function saveWorkout() {
 
 function showCompletionModal(workout) {
     const modal = document.getElementById('completion-modal');
-    modal.classList.add('active');
+    if (modal) modal.classList.add('active');
 
     for (let i = 0; i < 40; i++) {
         setTimeout(() => {
@@ -686,17 +456,20 @@ function showCompletionModal(workout) {
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = ['#4A90E2', '#9B7EBD', '#E87DAB', '#10B981'][Math.floor(Math.random() * 4)];
             confetti.style.animationDelay = Math.random() * 0.4 + 's';
-            modal.querySelector('.completion-content').appendChild(confetti);
+            modal.querySelector('.completion-content')?.appendChild(confetti);
             setTimeout(() => confetti.remove(), 3000);
         }, i * 25);
     }
 
-    document.getElementById('completion-stats').innerHTML = `
-        <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
-        <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
-        <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
-        <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
-    `;
+    const stats = document.getElementById('completion-stats');
+    if (stats) {
+        stats.innerHTML = `
+            <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
+            <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
+            <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
+            <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
+        `;
+    }
     
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
@@ -710,15 +483,18 @@ function closeCompletionModal() {
         storage.set('workoutHistory', history);
     }
     
-    document.getElementById('completion-modal').classList.remove('active');
+    const modal = document.getElementById('completion-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 function openTimer() {
-    document.getElementById('timer-modal').classList.add('active');
+    const modal = document.getElementById('timer-modal');
+    if (modal) modal.classList.add('active');
 }
 
 function closeTimer() {
-    document.getElementById('timer-modal').classList.remove('active');
+    const modal = document.getElementById('timer-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 function setRestTime(seconds) {
@@ -731,7 +507,7 @@ function setRestTime(seconds) {
     const presets = [60, 180, 300, 420];
     const index = presets.indexOf(seconds);
     if (index > -1) {
-        document.querySelector(`.timer-presets .timer-preset:nth-child(${index + 1})`).classList.add('active');
+        document.querySelector(`.timer-presets .timer-preset:nth-child(${index + 1})`)?.classList.add('active');
     }
 }
 
@@ -743,27 +519,54 @@ function toggleTimer() {
     }
 }
 
+function startTimer() {
+    timerRunning = true;
+    document.getElementById('timer-start-btn').textContent = 'Pause';
+    document.querySelector('.timer-display')?.classList.add('running');
+    document.querySelector('.floating-timer')?.classList.add('running');
+
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+
+        if (timerSeconds <= 0) {
+            stopTimer();
+            alert('Rest period complete!');
+            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+            timerSeconds = 180; 
+            setRestTime(180);
+            updateTimerDisplay();
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById('timer-start-btn').textContent = 'Start';
+    document.querySelector('.timer-display')?.classList.remove('running');
+    document.querySelector('.floating-timer')?.classList.remove('running');
+}
+
 function updateTimerDisplay() {
     const mins = Math.floor(timerSeconds / 60);
     const secs = timerSeconds % 60;
     const display = `${mins}:${secs.toString().padStart(2, '0')}`;
-    document.getElementById('timer-display').textContent = display;
+    const timerDisplay = document.getElementById('timer-display');
+    if (timerDisplay) timerDisplay.textContent = display;
     
-    if (timerRunning) {
-        document.getElementById('timer-float-icon').textContent = display;
-    } else {
-        document.getElementById('timer-float-icon').textContent = '⏱️';
-    }
+    const floatIcon = document.getElementById('timer-float-icon');
+    if (floatIcon) floatIcon.textContent = timerRunning ? display : '⏱️';
 }
 
-function switchTab(tab) {
+function switchTab(tab, clickedButton) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    const activeBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (clickedButton) clickedButton.classList.add('active');
 
-    document.getElementById(`${tab}-tab`).classList.add('active');
+    const tabContent = document.getElementById(`${tab}-tab`);
+    if (tabContent) tabContent.classList.add('active');
 
     if (tab === 'stats') renderAnalytics();
     if (tab === 'history') {
@@ -857,7 +660,8 @@ function renderHistory() {
             `;
         });
     }
-    document.getElementById('history-list-content').innerHTML = html;
+    const historyContent = document.getElementById('history-list-content');
+    if (historyContent) historyContent.innerHTML = html;
 }
 
 function editWorkout(workoutId) {
@@ -899,11 +703,11 @@ function editWorkout(workoutId) {
     if (indexToEdit > -1) {
         history.splice(indexToEdit, 1);
         storage.set('workoutHistory', history);
-
         recalculateAllPRs();
     }
 
-    switchTab('track');
+    const trackBtn = document.querySelector('.tab-btn[data-tab="track"]');
+    if (trackBtn) switchTab('track', trackBtn);
 
     updateProgress();
     renderExercise();
@@ -930,7 +734,7 @@ function deleteWorkout(workoutId) {
         renderAnalytics();
         
         const chartsTab = document.getElementById('charts-tab');
-        if (chartsTab.classList.contains('active')) {
+        if (chartsTab?.classList.contains('active')) {
             renderCharts();
         }
     }
@@ -963,14 +767,237 @@ function renderCalendar() {
         html += `<div class="calendar-day ${hasWorkout ? 'workout-day' : ''} ${isToday ? 'today' : ''}">${day}</div>`;
     }
     
-    document.getElementById('calendar-grid').innerHTML = html;
+    const grid = document.getElementById('calendar-grid');
+    if (grid) grid.innerHTML = html;
+}
+
+function renderCharts() {
+    const history = storage.get('workoutHistory', []);
+    const bodyWeights = storage.get('bodyWeights', []).sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // --- 1. Body Weight Chart ---
+    const weightCtx = document.getElementById('weight-chart');
+    if (weightChart) weightChart.destroy();
+
+    if (bodyWeights.length > 0 && weightCtx) {
+        weightChart = new Chart(weightCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: bodyWeights.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
+                datasets: [{
+                    label: 'Body Weight (lbs)',
+                    data: bodyWeights.map(d => d.weight),
+                    borderColor: '#E87DAB', 
+                    backgroundColor: 'rgba(232, 125, 171, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#E87DAB',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false, } },
+                scales: {
+                    y: { beginAtZero: false, ticks: { color: '#64748B' } },
+                    x: { ticks: { color: '#64748B' } }
+                }
+            }
+        });
+    } else if (weightCtx) {
+        weightCtx.parentElement.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">Log body weight on the Stats tab to see this chart.</div>';
+    }
+
+
+    if (history.length === 0) {
+        const volumeChartEl = document.getElementById('volume-chart');
+        if (volumeChartEl) volumeChartEl.parentElement.innerHTML = 
+            '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">Log workouts to see progress charts</div>';
+        const exerciseContainer = document.getElementById('exercise-charts-container');
+        if (exerciseContainer) exerciseContainer.innerHTML = '';
+        return;
+    }
+
+    // --- 2. Workout Volume Chart ---
+    const sortedHistory = history.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+    const labels = sortedHistory.map(w => new Date(w.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}));
+    const data = sortedHistory.map(w => w.totalVolume);
+
+    const ctx = document.getElementById('volume-chart');
+    if (!ctx) return; 
+
+    const chartCtx = ctx.getContext('2d');
+    if (volumeChart) volumeChart.destroy();
+
+    volumeChart = new Chart(chartCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Sets',
+                data: data,
+                borderColor: '#4A90E2',
+                backgroundColor: 'rgba(74, 144, 226, 0.08)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: '#4A90E2',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748B', font: { size: 11 } } },
+                x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
+            }
+        }
+    });
+
+    // --- 3. Exercise E1RM/Tonnage Charts ---
+    const exerciseData = {};
+    history.forEach(w => {
+        w.exercises.forEach(ex => {
+            if (!exerciseData[ex.name]) exerciseData[ex.name] = [];
+            
+            const bestSet = Object.values(ex.sets).reduce((best, set) => 
+                (set.e1rm || 0) > (best.e1rm || 0) ? set : best, {e1rm: 0});
+            
+            if (bestSet.e1rm > 0) {
+                const existing = exerciseData[ex.name].find(d => d.date === w.date);
+                if (!existing || bestSet.e1rm > existing.e1rm) {
+                    if (existing) {
+                        existing.e1rm = bestSet.e1rm;
+                    } else {
+                        exerciseData[ex.name].push({date: w.date, e1rm: bestSet.e1rm});
+                    }
+                }
+            }
+        });
+    });
+
+    const exerciseFreq = Object.keys(exerciseData).map(name => ({
+        name,
+        count: exerciseData[name].length
+    })).sort((a, b) => b.count - a.count).slice(0, 4);
+
+    const container = document.getElementById('exercise-charts-container');
+    if (container) container.innerHTML = '';
+    exerciseCharts.forEach(c => c.destroy());
+    exerciseCharts = [];
+
+    const colors = ['#4A90E2', '#9B7EBD', '#10B981', '#F59E0B'];
+
+    exerciseFreq.forEach((ex, idx) => {
+        const exData = exerciseData[ex.name].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        const chartDiv = document.createElement('div');
+        chartDiv.className = 'chart-container';
+        chartDiv.innerHTML = `
+            <div class="chart-title">${ex.name} (Estimated 1RM Trend)</div>
+            <canvas id="ex-chart-${idx}" class="chart-canvas"></canvas>
+        `;
+        if (container) container.appendChild(chartDiv);
+
+        const ctx = document.getElementById(`ex-chart-${idx}`);
+        if (!ctx) return;
+        
+        const chartCtx = ctx.getContext('2d');
+        const chart = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: exData.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
+                datasets: [{
+                    label: 'Estimated 1RM (lbs)',
+                    data: exData.map(d => d.e1rm),
+                    borderColor: colors[idx],
+                    backgroundColor: `${colors[idx]}15`,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: colors[idx],
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#64748B', font: { size: 11 } } },
+                    x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
+                }
+            }
+        });
+        exerciseCharts.push(chart);
+    });
 }
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    document.getElementById('dark-mode-icon').textContent = isDark ? '☀️' : '🌙';
+    const icon = document.getElementById('dark-mode-icon');
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
     storage.set('darkMode', isDark);
+
+    // Re-render charts to pick up new dark/light text colors
+    const chartsTab = document.getElementById('charts-tab');
+    if (chartsTab?.classList.contains('active')) {
+        renderCharts();
+    }
+}
+
+function copyLastWorkout(exIdx, setNum) {
+    const exercise = workoutData[currentDay].exercises[exIdx];
+    const history = storage.get('workoutHistory', []);
+    
+    const lastWorkout = history.filter(w => 
+        w.exercises.some(e => e.name === exercise.name)
+    ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    
+    if (!lastWorkout) {
+        alert('No previous data found for this exercise');
+        return;
+    }
+    
+    const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
+    
+    const bestSet = Object.values(lastEx.sets).reduce((best, set) => 
+        set.tonnage > best.tonnage ? set : best, {weight: 0, reps: 0});
+
+    if (bestSet.weight > 0) {
+        // Smart Copy Logic: Suggest +2.5 lbs progressive overload
+        const smartWeight = bestSet.weight + 2.5;
+        
+        const weightInput = document.getElementById(`weight-${exIdx}-${setNum}`);
+        const repsInput = document.getElementById(`reps-${exIdx}-${setNum}`);
+        
+        if (weightInput && repsInput) {
+             weightInput.value = smartWeight.toFixed(1);
+             repsInput.value = bestSet.reps;
+             
+             // Pass true for isWeightInput to trigger handleInput and auto-focus logic
+             handleInput(exIdx, setNum, true); 
+
+             // Stop the timer and reset it, prompting user to start their rest
+             stopTimer(); 
+             setRestTime(180);
+             updateTimerDisplay();
+        }
+
+    } else {
+        alert('No usable data found in the last workout.');
+    }
 }
 
 function setRating(rating) {
@@ -996,7 +1023,7 @@ function toggleTag(element, tag) {
 
 function showPRCelebration(prs) {
     const modal = document.getElementById('pr-celebration');
-    modal.classList.add('active');
+    if (modal) modal.classList.add('active');
     
     for (let i = 0; i < 60; i++) {
         setTimeout(() => {
@@ -1005,7 +1032,7 @@ function showPRCelebration(prs) {
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
             confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            modal.querySelector('.pr-celebration-content').appendChild(confetti);
+            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
             setTimeout(() => confetti.remove(), 3000);
         }, i * 15);
     }
@@ -1021,7 +1048,8 @@ function showPRCelebration(prs) {
         </div>`;
     });
     
-    document.getElementById('pr-details').innerHTML = html;
+    const details = document.getElementById('pr-details');
+    if (details) details.innerHTML = html;
     
     if ('vibrate' in navigator) {
         navigator.vibrate([200, 100, 200, 100, 400]);
@@ -1029,7 +1057,8 @@ function showPRCelebration(prs) {
 }
 
 function closePRCelebration() {
-    document.getElementById('pr-celebration').classList.remove('active');
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.remove('active');
 }
 
 function exportWorkoutData() {
@@ -1040,7 +1069,7 @@ function exportWorkoutData() {
         return;
     }
     
-    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n'; // Added E1RM field
+    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n';
     
     history.forEach(workout => {
         workout.exercises.forEach(ex => {
@@ -1077,38 +1106,13 @@ function showBodyWeightLog() {
         storage.set('bodyWeights', weights);
         alert(`Body weight logged: ${newWeight} lbs`);
         
-        // Re-render charts if on charts tab
         const chartsTab = document.getElementById('charts-tab');
-        if (chartsTab.classList.contains('active')) {
+        if (chartsTab?.classList.contains('active')) {
             renderCharts();
         }
 
     } else if (newWeight !== null && newWeight.trim() !== '') {
         alert('Invalid weight entered. Please enter a positive number.');
-    }
-}
-
-function checkAndCelebratePR(exercises) {
-    const prs = storage.get('personalRecords', {});
-    const newPRs = [];
-    
-    exercises.forEach(ex => {
-        Object.values(ex.sets).forEach(set => {
-            const oldPR = prs[ex.name];
-            if (oldPR && set.tonnage > oldPR.tonnage) { 
-                newPRs.push({
-                    exercise: ex.name,
-                    oldWeight: oldPR.weight,
-                    oldReps: oldPR.reps,
-                    newWeight: set.weight,
-                    newReps: set.reps
-                });
-            }
-        });
-    });
-    
-    if (newPRs.length > 0) {
-        setTimeout(() => showPRCelebration(newPRs), 500);
     }
 }
 
@@ -1123,7 +1127,7 @@ function updatePRs(exercises) {
                         weight: set.weight, 
                         reps: set.reps, 
                         tonnage: set.tonnage,
-                        e1rm: set.e1rm // Store E1RM in PR for display
+                        e1rm: set.e1rm
                     };
                 }
             }
