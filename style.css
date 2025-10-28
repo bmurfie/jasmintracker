@@ -39,6 +39,7 @@ body.dark-mode {
 }
 
 body.dark-mode {
+    /* Ensuring the body gradient uses dark colors */
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
 }
 
@@ -46,7 +47,8 @@ body.dark-mode {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #F0F4FF 0%, #FFF5F9 100%);
+    /* Ensuring the light mode body gradient uses variables */
+    background: linear-gradient(135deg, var(--bg-light) 0%, #FFF5F9 100%); 
     background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
@@ -59,7 +61,7 @@ body {
     max-width: 480px;
     margin: 0 auto;
     min-height: 100vh;
-    background: var(--bg-card);
+    background: var(--bg-card); /* Now guaranteed to be white/dark blue */
     box-shadow: 0 0 60px rgba(74, 144, 226, 0.08);
 }
 
@@ -113,7 +115,7 @@ body {
 /* Tab Navigation */
 .tab-bar {
     display: flex;
-    background: white;
+    background: var(--bg-card); /* Ensuring tab bar switches background */
     margin-top: -44px;
     margin-left: 16px;
     margin-right: 16px;
@@ -182,7 +184,8 @@ body {
     border-radius: 12px;
     font-size: 15px;
     font-weight: 500;
-    background: white;
+    /* Ensuring input background switches */
+    background: var(--bg-card); 
     color: var(--text-primary);
     transition: all 0.2s;
 }
@@ -217,7 +220,8 @@ body {
 }
 
 .progress-ring .bg-circle {
-    stroke: #E2E8F0;
+    /* Ensuring background circle swaps color */
+    stroke: var(--border-light); 
 }
 
 .progress-ring .progress-circle {
@@ -251,7 +255,7 @@ body {
 /* Exercise Card */
 .exercise-card {
     margin: 20px;
-    background: white;
+    background: var(--bg-card); /* Ensuring card background switches */
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -283,11 +287,13 @@ body {
 }
 
 .badge-compound {
+    /* Hardcoded colors for badges must remain light */
     background: linear-gradient(135deg, #EEF2FF, #DDD6FE);
     color: #5B21B6;
 }
 
 .badge-isolation {
+    /* Hardcoded colors for badges must remain light */
     background: linear-gradient(135deg, #FEF3C7, #FDE68A);
     color: #92400E;
 }
@@ -300,7 +306,8 @@ body {
 
 /* PR Display */
 .pr-display {
-    background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+    /* Hardcoded gradient remains light, but border uses variables */
+    background: linear-gradient(135deg, #ECFDF5, #D1FAE5); 
     border: 1px solid #6EE7B7;
     border-radius: 12px;
     padding: 14px;
@@ -334,8 +341,10 @@ body {
 
 .pr-stat-value {
     font-size: 1.125rem;
+    color: var(--primary-dark); /* Ensure text switches */
     font-weight: 800;
-    color: #065F46;
+    /* Hardcoded green is too dark in dark mode, change to var */
+    color: var(--success);
 }
 
 /* Set Input */
@@ -349,7 +358,8 @@ body {
 }
 
 .set-input.completed {
-    background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+    /* Hardcoded gradient remains light/green */
+    background: linear-gradient(135deg, #ECFDF5, #D1FAE5); 
     border-color: #6EE7B7;
 }
 
@@ -390,7 +400,7 @@ body {
     font-size: 1.125rem;
     font-weight: 700;
     text-align: center;
-    background: white;
+    background: var(--bg-card); /* Ensure input box background switches */
     color: var(--text-primary);
     transition: all 0.2s;
 }
@@ -402,7 +412,8 @@ body {
 }
 
 .set-completed input {
-    background: white;
+    /* Hardcoded white background for completed input in light mode */
+    background: var(--bg-card); 
     color: var(--success);
     border-color: #6EE7B7;
 }
@@ -427,6 +438,9 @@ body {
     font-family: 'Inter', sans-serif;
     resize: vertical;
     min-height: 70px;
+    /* Ensuring textarea background switches */
+    background: var(--bg-card); 
+    color: var(--text-primary);
     transition: all 0.2s;
 }
 
@@ -467,7 +481,7 @@ body {
 }
 
 .nav-btn-secondary {
-    background: white;
+    background: var(--bg-card); /* Ensure secondary button background switches */
     color: var(--primary-blue);
     border: 1px solid var(--border-light);
 }
@@ -520,7 +534,9 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(30, 41, 59, 0.75);
+    /* Use dark background color variable for backdrop */
+    background: var(--bg-card); 
+    background: rgba(30, 41, 59, 0.75); 
     backdrop-filter: blur(4px);
     display: none;
     align-items: center;
@@ -534,7 +550,7 @@ body {
 }
 
 .timer-modal-content {
-    background: white;
+    background: var(--bg-card); /* Ensure modal content switches background */
     border-radius: 20px;
     padding: 36px;
     max-width: 360px;
@@ -575,7 +591,7 @@ body {
     padding: 10px 18px;
     border: 1px solid var(--border-light);
     border-radius: 10px;
-    background: white;
+    background: var(--bg-card); /* Ensure preset button background switches */
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.875rem;
@@ -613,7 +629,7 @@ body {
 }
 
 .stat-card {
-    background: white;
+    background: var(--bg-card); /* Ensure stat card background switches */
     border: 1px solid var(--border-light);
     border-radius: 14px;
     padding: 20px;
@@ -635,7 +651,7 @@ body {
 }
 
 .content-card {
-    background: white;
+    background: var(--bg-card); /* Ensure content card background switches */
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -653,13 +669,13 @@ body {
 }
 
 .pr-item {
+    background: var(--bg-light);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px;
-    background: var(--bg-light);
-    border-radius: 10px;
-    margin-bottom: 8px;
 }
 
 .pr-exercise {
@@ -674,7 +690,7 @@ body {
 
 /* History View */
 .history-calendar {
-    background: white;
+    background: var(--bg-card); /* Ensure calendar background switches */
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -744,7 +760,7 @@ body {
 
 /* Charts View */
 .chart-container {
-    background: white;
+    background: var(--bg-card); /* Ensure chart container background switches */
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 24px;
@@ -767,7 +783,7 @@ body {
 
 /* Nutrition View */
 .macro-card {
-    background: white;
+    background: var(--bg-card); /* Ensure macro card background switches */
     border: 1px solid var(--border-light);
     border-radius: 14px;
     padding: 20px;
@@ -885,7 +901,7 @@ body {
 .exercise-list-sets {
     font-weight: 700;
     color: var(--primary-blue);
-    background: white;
+    background: var(--bg-card); /* Ensure sets badge switches background */
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 0.813rem;
@@ -920,8 +936,6 @@ body {
 }
 
 .supplement-icon {
-    width: 32px;
-    height: 32px;
     background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
     border-radius: 8px;
     display: flex;
@@ -941,7 +955,7 @@ body {
 .supplement-dosage {
     font-size: 0.813rem;
     color: var(--text-secondary);
-    background: white;
+    background: var(--bg-card); /* Ensure dosage tag switches background */
     padding: 4px 10px;
     border-radius: 6px;
 }
@@ -953,7 +967,7 @@ body {
 }
 
 .tips-list li {
-    background: white;
+    background: var(--bg-card); /* Ensure list item background switches */
     border-left: 3px solid var(--primary-blue);
     padding: 14px 16px;
     margin-bottom: 12px;
@@ -975,7 +989,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(30, 41, 59, 0.85);
+    /* Ensuring overlay is dark */
+    background: rgba(30, 41, 59, 0.85); 
     backdrop-filter: blur(4px);
     display: none;
     align-items: center;
@@ -1020,7 +1035,8 @@ body {
 }
 
 .pr-celebration-content {
-    background: linear-gradient(135deg, var(--bg-card), var(--bg-light));
+    /* Use variables for content background */
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-light)); 
     border-radius: 28px;
     padding: 48px 36px;
     max-width: 400px;
@@ -1087,8 +1103,8 @@ body {
 
 .completion-stat {
     margin: 10px 0;
-    font-size: 1.063rem;
     color: var(--text-primary);
+    font-size: 1.063rem;
 }
 
 .completion-stat strong {
@@ -1143,7 +1159,7 @@ body {
     transition: all 0.2s;
     border: 2px solid var(--border-light);
     color: var(--text-secondary);
-    background: var(--bg-card);
+    background: var(--bg-card); /* Ensure tag background switches */
 }
 
 .tag.active {
@@ -1178,7 +1194,8 @@ body {
 
 /* Info Box */
 .info-box {
-    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    /* Hardcoded gradient for info box remains light */
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE); 
     border: 1px solid #93C5FD;
     border-radius: 12px;
     padding: 16px;
