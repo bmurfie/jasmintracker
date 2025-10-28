@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-    <title>Jasmin's HIT Workout Tracker ✨</title>
+    <title>Jasmin's Workout Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Chewy&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
         
-        /* Enhanced Color System */
+        /* Professional Blue-Pink Color System */
         :root {
-            --pink-hot: #FF1493;
-            --pink-deep: #E91E63;
-            --pink-medium: #F06292;
-            --pink-light: #FFB6D9;
-            --pink-baby: #FFE4F0;
-            --pink-pale: #FFF5FA;
-            --purple: #A855F7;
-            --green: #10B981;
-            --red: #EF4444;
-            --orange: #F59E0B;
-            --text-dark: #2D1B2E;
-            --text-medium: #6B4C6D;
-            --text-light: #9E7BA0;
+            --primary-blue: #4A90E2;
+            --primary-dark: #2E5C8A;
+            --accent-rose: #E87DAB;
+            --accent-lavender: #9B7EBD;
+            --accent-coral: #FF9A8B;
+            --bg-light: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --border-light: #E2E8F0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FFF0F7 0%, #FFE0ED 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #F0F4FF 0%, #FFF5F9 100%);
             background-attachment: fixed;
-            color: var(--text-dark);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* App Container */
@@ -42,75 +44,78 @@
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 0 40px rgba(255, 20, 147, 0.15);
+            background: var(--bg-card);
+            box-shadow: 0 0 60px rgba(74, 144, 226, 0.08);
         }
 
         /* Top Header */
         .app-header {
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-lavender) 100%);
             color: white;
-            padding: 20px 20px 60px 20px;
+            padding: 24px 20px 64px 20px;
             text-align: center;
             position: relative;
         }
         
         .app-title {
-            font-family: 'Chewy', cursive;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
         }
         
         .app-subtitle {
-            font-size: 0.9rem;
-            opacity: 0.95;
-            font-weight: 600;
+            font-size: 0.875rem;
+            opacity: 0.92;
+            font-weight: 500;
+            letter-spacing: 0.02em;
         }
 
         /* Tab Navigation */
         .tab-bar {
             display: flex;
             background: white;
-            margin-top: -40px;
-            margin-left: 20px;
-            margin-right: 20px;
-            border-radius: 20px;
-            padding: 6px;
-            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.15);
+            margin-top: -44px;
+            margin-left: 16px;
+            margin-right: 16px;
+            border-radius: 16px;
+            padding: 4px;
+            box-shadow: 0 4px 24px rgba(74, 144, 226, 0.12);
             position: relative;
             z-index: 10;
+            gap: 4px;
         }
         
         .tab-btn {
             flex: 1;
-            padding: 12px 16px;
+            padding: 10px 6px;
             border: none;
             background: transparent;
-            color: var(--text-medium);
+            color: var(--text-secondary);
             font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 16px;
+            font-size: 0.688rem;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s ease;
             position: relative;
         }
         
         .tab-btn.active {
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
             color: white;
-            box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.24);
         }
         
         .tab-btn:not(.active):hover {
-            background: var(--pink-pale);
-            color: var(--pink-deep);
+            background: var(--bg-light);
+            color: var(--primary-blue);
         }
 
         /* Tab Content */
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s ease;
         }
         
         .tab-content.active {
@@ -118,7 +123,7 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -127,32 +132,40 @@
             padding: 20px;
             display: flex;
             gap: 12px;
-            background: var(--pink-pale);
-            border-bottom: 2px solid var(--pink-light);
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-light);
         }
         
         .workout-controls select,
         .workout-controls input {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--pink-light);
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 12px 14px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
             background: white;
-            color: var(--text-dark);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .workout-controls select:focus,
+        .workout-controls input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
 
         /* Progress Ring */
         .progress-section {
-            padding: 20px;
+            padding: 24px 20px;
             text-align: center;
         }
         
         .progress-ring {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 16px;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
             position: relative;
         }
         
@@ -162,17 +175,17 @@
         
         .progress-ring circle {
             fill: none;
-            stroke-width: 8;
+            stroke-width: 7;
         }
         
         .progress-ring .bg-circle {
-            stroke: var(--pink-pale);
+            stroke: #E2E8F0;
         }
         
         .progress-ring .progress-circle {
             stroke: url(#progressGradient);
             stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s ease;
+            transition: stroke-dashoffset 0.6s ease;
         }
         
         .progress-text {
@@ -180,33 +193,31 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary-blue);
         }
         
         .progress-label {
-            font-size: 1.1rem;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 4px;
+            color: var(--text-primary);
+            margin-bottom: 6px;
         }
         
         .progress-sublabel {
-            font-size: 0.9rem;
-            color: var(--text-medium);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
 
-        /* Exercise Card - Focus Mode */
+        /* Exercise Card */
         .exercise-card {
             margin: 20px;
-            background: linear-gradient(to bottom right, white, var(--pink-pale));
-            border: 3px solid var(--pink-light);
-            border-radius: 24px;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 8px 24px rgba(255, 20, 147, 0.12);
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.06);
         }
         
         .exercise-header {
@@ -217,53 +228,54 @@
         }
         
         .exercise-name {
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
         }
         
         .exercise-type-badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.688rem;
+            font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .badge-compound {
-            background: linear-gradient(135deg, #FFE4F0, #FFB6D9);
-            color: var(--pink-hot);
+            background: linear-gradient(135deg, #EEF2FF, #DDD6FE);
+            color: #5B21B6;
         }
         
         .badge-isolation {
-            background: linear-gradient(135deg, #F3E8FF, #E9D5FF);
-            color: var(--purple);
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            color: #92400E;
         }
         
         .exercise-target {
-            font-size: 0.9rem;
-            color: var(--text-medium);
-            margin-bottom: 12px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
         }
 
         /* PR Display */
         .pr-display {
             background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
-            border: 2px solid #6EE7B7;
-            border-radius: 16px;
-            padding: 12px;
+            border: 1px solid #6EE7B7;
+            border-radius: 12px;
+            padding: 14px;
             margin-bottom: 16px;
         }
         
         .pr-display-title {
-            font-size: 0.75rem;
+            font-size: 0.688rem;
             font-weight: 700;
-            color: var(--green);
+            color: var(--success);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
         
         .pr-display-stats {
@@ -277,24 +289,25 @@
         }
         
         .pr-stat-label {
-            font-size: 0.7rem;
+            font-size: 0.688rem;
             color: #059669;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
         
         .pr-stat-value {
-            font-size: 1rem;
+            font-size: 1.125rem;
             font-weight: 800;
             color: #065F46;
         }
 
         /* Set Input */
         .set-input {
-            background: white;
-            border: 2px solid var(--pink-light);
-            border-radius: 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
+            transition: all 0.2s;
         }
         
         .set-input.completed {
@@ -303,16 +316,17 @@
         }
         
         .set-label {
-            font-size: 0.85rem;
+            font-size: 0.813rem;
             font-weight: 700;
-            color: var(--text-medium);
-            margin-bottom: 8px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .set-fields {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
         
@@ -322,41 +336,43 @@
         
         .set-field label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.688rem;
             font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 4px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
         
         .set-field input {
             width: 100%;
             padding: 12px;
-            border: 2px solid var(--pink-light);
-            border-radius: 12px;
-            font-size: 1.2rem;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 1.125rem;
             font-weight: 700;
             text-align: center;
             background: white;
-            color: var(--text-dark);
+            color: var(--text-primary);
+            transition: all 0.2s;
         }
         
         .set-field input:focus {
             outline: none;
-            border-color: var(--pink-hot);
-            box-shadow: 0 0 0 4px rgba(255, 20, 147, 0.1);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
         
         .set-completed input {
             background: white;
-            color: var(--green);
+            color: var(--success);
             border-color: #6EE7B7;
         }
         
         .set-multiplier {
             font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--pink-light);
+            font-weight: 700;
+            color: var(--text-muted);
         }
 
         /* Quick Notes */
@@ -367,17 +383,19 @@
         .quick-notes textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid var(--pink-light);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
             resize: vertical;
-            min-height: 60px;
+            min-height: 70px;
+            transition: all 0.2s;
         }
         
         .quick-notes textarea:focus {
             outline: none;
-            border-color: var(--pink-hot);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
 
         /* Navigation Buttons */
@@ -391,32 +409,34 @@
             flex: 1;
             padding: 14px;
             border: none;
-            border-radius: 16px;
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 0.938rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s ease;
+            letter-spacing: 0.01em;
         }
         
         .nav-btn-primary {
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
             color: white;
-            box-shadow: 0 4px 16px rgba(255, 20, 147, 0.3);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
         }
         
         .nav-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3);
         }
         
         .nav-btn-secondary {
             background: white;
-            color: var(--pink-deep);
-            border: 2px solid var(--pink-light);
+            color: var(--primary-blue);
+            border: 1px solid var(--border-light);
         }
         
         .nav-btn-secondary:hover {
-            background: var(--pink-pale);
+            background: var(--bg-light);
+            border-color: var(--primary-blue);
         }
         
         .nav-btn:disabled {
@@ -427,37 +447,32 @@
         /* Floating Timer */
         .floating-timer {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            right: 24px;
             width: 64px;
             height: 64px;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
             border-radius: 50%;
-            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+            box-shadow: 0 4px 24px rgba(74, 144, 226, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 100;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         
         .floating-timer:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(74, 144, 226, 0.45);
         }
         
         .floating-timer.running {
-            background: linear-gradient(135deg, var(--green), #059669);
+            background: linear-gradient(135deg, var(--success), #059669);
         }
         
         .timer-icon {
-            font-size: 1.8rem;
-        }
-        
-        .timer-text {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: white;
+            font-size: 1.75rem;
         }
 
         /* Timer Modal */
@@ -467,7 +482,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -481,69 +497,73 @@
         
         .timer-modal-content {
             background: white;
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 36px;
             max-width: 360px;
             width: 90%;
             text-align: center;
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.2);
+        }
+        
+        .timer-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
         }
         
         .timer-display {
             font-size: 4rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 20px 0;
+            color: var(--primary-blue);
+            margin: 24px 0;
+            letter-spacing: -0.02em;
         }
         
         .timer-display.running {
-            background: linear-gradient(135deg, var(--green), #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--success);
         }
         
         .timer-presets {
             display: flex;
             gap: 8px;
-            margin: 20px 0;
+            margin: 24px 0;
             flex-wrap: wrap;
             justify-content: center;
         }
         
         .timer-preset {
-            padding: 8px 16px;
-            border: 2px solid var(--pink-light);
-            border-radius: 12px;
+            padding: 10px 18px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
             background: white;
-            color: var(--text-dark);
+            color: var(--text-primary);
             font-weight: 600;
+            font-size: 0.875rem;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .timer-preset:hover {
+            border-color: var(--primary-blue);
+            background: var(--bg-light);
         }
         
         .timer-preset.active {
-            background: var(--pink-hot);
+            background: var(--primary-blue);
             color: white;
-            border-color: var(--pink-hot);
+            border-color: var(--primary-blue);
         }
         
         .timer-controls {
             display: flex;
             gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .timer-controls button {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 16px;
-            font-weight: 700;
-            cursor: pointer;
+            margin-top: 24px;
         }
 
         /* Analytics View */
-        .analytics-section {
+        .analytics-section, .history-section, .charts-section, .nutrition-section, .plan-section {
             padding: 20px;
         }
         
@@ -555,80 +575,80 @@
         }
         
         .stat-card {
-            background: linear-gradient(135deg, white, var(--pink-pale));
-            border: 2px solid var(--pink-light);
-            border-radius: 16px;
-            padding: 16px;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.04);
         }
         
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary-blue);
+            margin-bottom: 6px;
         }
         
         .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-medium);
+            font-size: 0.813rem;
+            color: var(--text-secondary);
             font-weight: 600;
-            margin-top: 4px;
         }
         
-        .pr-list {
+        .content-card {
             background: white;
-            border: 2px solid var(--pink-light);
-            border-radius: 20px;
-            padding: 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.04);
         }
         
-        .pr-list-title {
-            font-size: 1.2rem;
+        .content-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.375rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
         }
-        
+
         .pr-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: var(--pink-pale);
-            border-radius: 12px;
+            padding: 14px;
+            background: var(--bg-light);
+            border-radius: 10px;
             margin-bottom: 8px;
         }
         
         .pr-exercise {
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--text-primary);
         }
         
         .pr-stats {
             font-weight: 700;
-            color: var(--pink-hot);
+            color: var(--primary-blue);
         }
 
         /* History View */
-        .history-section {
-            padding: 20px;
-        }
-        
         .history-calendar {
             background: white;
-            border: 2px solid var(--pink-light);
-            border-radius: 20px;
-            padding: 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.04);
         }
         
         .calendar-title {
-            font-size: 1.2rem;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 16px;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
             text-align: center;
         }
         
@@ -641,33 +661,26 @@
         .calendar-day {
             aspect-ratio: 1;
             border-radius: 8px;
-            background: var(--pink-pale);
+            background: var(--bg-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.813rem;
             font-weight: 600;
-            color: var(--text-medium);
+            color: var(--text-secondary);
         }
         
         .calendar-day.workout-day {
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
             color: white;
         }
         
         .calendar-day.today {
-            border: 2px solid var(--pink-hot);
-        }
-        
-        .history-list {
-            background: white;
-            border: 2px solid var(--pink-light);
-            border-radius: 20px;
-            padding: 20px;
+            border: 2px solid var(--primary-blue);
         }
         
         .history-item {
-            background: var(--pink-pale);
+            background: var(--bg-light);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
@@ -677,17 +690,244 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .history-date {
             font-weight: 700;
-            color: var(--pink-hot);
+            color: var(--primary-blue);
         }
         
         .history-sets {
             font-weight: 600;
-            color: var(--text-medium);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Charts View */
+        .chart-container {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.04);
+        }
+        
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            height: 260px;
+            width: 100%;
+        }
+
+        /* Nutrition View */
+        .macro-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.04);
+        }
+        
+        .macro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .macro-name {
+            font-weight: 700;
+            font-size: 1.063rem;
+            color: var(--text-primary);
+        }
+        
+        .macro-value {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+        }
+        
+        .macro-bar {
+            height: 8px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        
+        .macro-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .macro-protein .macro-fill {
+            background: linear-gradient(90deg, var(--accent-rose), #D946A6);
+        }
+        
+        .macro-carbs .macro-fill {
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-lavender));
+        }
+        
+        .macro-fats .macro-fill {
+            background: linear-gradient(90deg, var(--warning), #F97316);
+        }
+        
+        .macro-subtext {
+            font-size: 0.813rem;
+            color: var(--text-secondary);
+        }
+
+        .nutrition-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .nutrition-table th {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            padding: 12px;
+            font-weight: 700;
+            text-align: left;
+            font-size: 0.813rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .nutrition-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.875rem;
+        }
+        
+        .nutrition-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Plan View */
+        .plan-subsection {
+            margin-bottom: 24px;
+        }
+        
+        .plan-subsection h4 {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 14px;
+            font-size: 1.063rem;
+        }
+        
+        .exercise-list-item {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .exercise-list-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .exercise-list-sets {
+            font-weight: 700;
+            color: var(--primary-blue);
+            background: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.813rem;
+        }
+        
+        .rest-day {
+            background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+            border: 1px solid #6EE7B7;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        /* Supplement List */
+        .supplement-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .supplement-list li {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .supplement-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .supplement-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+            font-size: 0.875rem;
+        }
+        
+        .supplement-dosage {
+            font-size: 0.813rem;
+            color: var(--text-secondary);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* Tips List */
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .tips-list li {
+            background: white;
+            border-left: 3px solid var(--primary-blue);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 1px 4px rgba(74, 144, 226, 0.06);
+        }
+        
+        .tips-list strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
         }
 
         /* Completion Modal */
@@ -697,12 +937,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            animation: fadeIn 0.5s;
+            animation: fadeIn 0.4s;
         }
         
         .completion-modal.active {
@@ -712,18 +953,18 @@
         .completion-content {
             background: white;
             border-radius: 24px;
-            padding: 40px;
+            padding: 44px 32px;
             max-width: 380px;
             width: 90%;
             text-align: center;
             position: relative;
+            box-shadow: 0 24px 80px rgba(74, 144, 226, 0.3);
         }
         
         .confetti {
             position: absolute;
             width: 10px;
             height: 10px;
-            background: var(--pink-hot);
             position: absolute;
             animation: confettiFall 3s ease-out forwards;
         }
@@ -741,32 +982,57 @@
         }
         
         .completion-title {
-            font-family: 'Chewy', cursive;
+            font-family: 'Playfair Display', serif;
             font-size: 2rem;
-            background: linear-gradient(135deg, var(--pink-hot), var(--pink-deep));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
         
         .completion-stats {
-            margin: 20px 0;
+            margin: 24px 0;
         }
         
         .completion-stat {
-            margin: 8px 0;
-            font-size: 1.1rem;
-            color: var(--text-dark);
+            margin: 10px 0;
+            font-size: 1.063rem;
+            color: var(--text-primary);
         }
         
         .completion-stat strong {
-            color: var(--pink-hot);
+            color: var(--primary-blue);
         }
         
         .completion-quote {
             font-style: italic;
-            color: var(--text-medium);
-            margin: 20px 0;
+            color: var(--text-secondary);
+            margin: 24px 0;
+            line-height: 1.6;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            border: 1px solid #93C5FD;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .info-box-title {
+            font-weight: 700;
+            color: #1E40AF;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-box-content {
+            color: #1E3A8A;
+            line-height: 1.6;
+            font-size: 0.875rem;
         }
 
         /* Mobile Optimizations */
@@ -776,6 +1042,9 @@
             }
             .set-multiplier {
                 transform: rotate(90deg);
+            }
+            .stat-cards {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -791,15 +1060,18 @@
     <div class="app-container">
         <!-- Header -->
         <div class="app-header">
-            <div class="app-title">💪 Jasmin's HIT Tracker</div>
-            <div class="app-subtitle">High Intensity • Menzer Style</div>
+            <div class="app-title">Jasmin's Workout Tracker</div>
+            <div class="app-subtitle">High Intensity Training • Mentzer Protocol</div>
         </div>
 
         <!-- Tab Navigation -->
         <div class="tab-bar">
             <button class="tab-btn active" onclick="switchTab('track')">Track</button>
-            <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+            <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
             <button class="tab-btn" onclick="switchTab('history')">History</button>
+            <button class="tab-btn" onclick="switchTab('charts')">Charts</button>
+            <button class="tab-btn" onclick="switchTab('nutrition')">Nutrition</button>
+            <button class="tab-btn" onclick="switchTab('plan')">Plan</button>
         </div>
 
         <!-- Track Tab -->
@@ -819,20 +1091,20 @@
             <!-- Progress Ring -->
             <div class="progress-section">
                 <div class="progress-ring">
-                    <svg width="120" height="120">
+                    <svg width="130" height="130">
                         <defs>
                             <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#FF1493" />
-                                <stop offset="100%" style="stop-color:#E91E63" />
+                                <stop offset="0%" style="stop-color:#4A90E2" />
+                                <stop offset="100%" style="stop-color:#9B7EBD" />
                             </linearGradient>
                         </defs>
-                        <circle class="bg-circle" cx="60" cy="60" r="52"></circle>
-                        <circle class="progress-circle" cx="60" cy="60" r="52" 
-                                stroke-dasharray="326.73" stroke-dashoffset="326.73" id="progress-circle"></circle>
+                        <circle class="bg-circle" cx="65" cy="65" r="58"></circle>
+                        <circle class="progress-circle" cx="65" cy="65" r="58" 
+                                stroke-dasharray="364.42" stroke-dashoffset="364.42" id="progress-circle"></circle>
                     </svg>
                     <div class="progress-text" id="progress-text">0/4</div>
                 </div>
-                <div class="progress-label" id="progress-label">Ready to crush it!</div>
+                <div class="progress-label" id="progress-label">Ready to Begin</div>
                 <div class="progress-sublabel" id="progress-sublabel">Select your workout day above</div>
             </div>
 
@@ -847,8 +1119,8 @@
             </div>
         </div>
 
-        <!-- Analytics Tab -->
-        <div id="analytics-tab" class="tab-content">
+        <!-- Stats Tab -->
+        <div id="stats-tab" class="tab-content">
             <div class="analytics-section">
                 <div class="stat-cards">
                     <div class="stat-card">
@@ -869,8 +1141,8 @@
                     </div>
                 </div>
 
-                <div class="pr-list">
-                    <div class="pr-list-title">🏆 Personal Records</div>
+                <div class="content-card">
+                    <div class="content-card-title">Personal Records</div>
                     <div id="pr-list-content"></div>
                 </div>
             </div>
@@ -880,13 +1152,437 @@
         <div id="history-tab" class="tab-content">
             <div class="history-section">
                 <div class="history-calendar">
-                    <div class="calendar-title">📅 This Month</div>
+                    <div class="calendar-title">This Month</div>
                     <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
 
-                <div class="history-list">
-                    <div class="pr-list-title">📝 Recent Workouts</div>
+                <div class="content-card">
+                    <div class="content-card-title">Recent Workouts</div>
                     <div id="history-list-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Tab -->
+        <div id="charts-tab" class="tab-content">
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">Workout Volume Trend</div>
+                    <canvas id="volume-chart" class="chart-canvas"></canvas>
+                </div>
+
+                <div id="exercise-charts-container"></div>
+            </div>
+        </div>
+
+        <!-- Nutrition Tab -->
+        <div id="nutrition-tab" class="tab-content">
+            <div class="nutrition-section">
+                <!-- Daily Macros -->
+                <div class="content-card">
+                    <div class="content-card-title">Daily Macronutrients</div>
+                    
+                    <div class="macro-card macro-protein">
+                        <div class="macro-header">
+                            <div class="macro-name">Protein</div>
+                            <div class="macro-value">130-150g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 40%;"></div>
+                        </div>
+                        <div class="macro-subtext">520-600 calories • Muscle repair & growth</div>
+                    </div>
+
+                    <div class="macro-card macro-carbs">
+                        <div class="macro-header">
+                            <div class="macro-name">Carbohydrates</div>
+                            <div class="macro-value">180-220g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="macro-subtext">720-880 calories • Energy & performance</div>
+                    </div>
+
+                    <div class="macro-card macro-fats">
+                        <div class="macro-header">
+                            <div class="macro-name">Healthy Fats</div>
+                            <div class="macro-value">50-65g</div>
+                        </div>
+                        <div class="macro-bar">
+                            <div class="macro-fill" style="width: 30%;"></div>
+                        </div>
+                        <div class="macro-subtext">450-585 calories • Hormones & recovery</div>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 20px;">
+                        <div class="info-box-title">
+                            <span>📊</span>
+                            <span>Daily Total</span>
+                        </div>
+                        <div class="info-box-content">
+                            <strong>1,690 - 2,065 calories per day</strong><br>
+                            Adjust based on activity level and goals
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meal Timing -->
+                <div class="content-card">
+                    <div class="content-card-title">Meal Timing Strategy</div>
+                    
+                    <div class="tips-list">
+                        <li>
+                            <strong>Pre-Workout (1-2 hours before)</strong>
+                            Complex carbs + lean protein. Examples: Oatmeal with protein powder, banana, or rice with chicken breast.
+                        </li>
+                        <li>
+                            <strong>Post-Workout (within 30 minutes)</strong>
+                            Fast-digesting protein + simple carbs. Examples: Whey protein shake with fruit or rice cakes.
+                        </li>
+                        <li>
+                            <strong>Main Meals (3-4 per day)</strong>
+                            Balanced portions of protein, complex carbs, healthy fats, and vegetables.
+                        </li>
+                        <li>
+                            <strong>Evening Meal</strong>
+                            Higher protein, moderate fats, lower carbs to support overnight recovery.
+                        </li>
+                    </div>
+                </div>
+
+                <!-- Hydration -->
+                <div class="content-card">
+                    <div class="content-card-title">Hydration Goals</div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <span style="font-size: 1.5rem;">💧</span>
+                            <span>Daily Water Intake</span>
+                        </div>
+                        <div class="info-box-content">
+                            <strong style="font-size: 1.125rem; display: block; margin-bottom: 8px;">2.5 - 3.0 Liters</strong>
+                            Increase on workout days and during hot weather. Hydrate consistently throughout the day.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Meal Plan -->
+                <div class="content-card">
+                    <div class="content-card-title">Sample Daily Meal Plan</div>
+                    
+                    <table class="nutrition-table">
+                        <thead>
+                            <tr>
+                                <th>Meal</th>
+                                <th>Foods</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Breakfast</strong></td>
+                                <td>3 egg whites + 1 whole egg, oatmeal with berries, Greek yogurt</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lunch</strong></td>
+                                <td>Grilled chicken breast, quinoa, roasted vegetables, avocado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Snack</strong></td>
+                                <td>Protein shake, rice cakes with almond butter</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dinner</strong></td>
+                                <td>Salmon or lean beef, sweet potato, steamed broccoli, olive oil</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Evening</strong></td>
+                                <td>Casein protein shake or cottage cheese (optional)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Supplement Stack -->
+                <div class="content-card">
+                    <div class="content-card-title">Supplement Protocol</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Morning</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">💊</div>
+                                <span class="supplement-name">Multivitamin</span>
+                                <span class="supplement-dosage">1 tablet</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">☀️</div>
+                                <span class="supplement-name">Vitamin D3</span>
+                                <span class="supplement-dosage">2,000 IU</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🐟</div>
+                                <span class="supplement-name">Omega-3 Fish Oil</span>
+                                <span class="supplement-dosage">1-2g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Pre-Workout (30 min before)</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">☕</div>
+                                <span class="supplement-name">Caffeine</span>
+                                <span class="supplement-dosage">200mg</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">⚡</div>
+                                <span class="supplement-name">Creatine Monohydrate</span>
+                                <span class="supplement-dosage">5g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🔥</div>
+                                <span class="supplement-name">Beta-Alanine</span>
+                                <span class="supplement-dosage">3-4g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">💪</div>
+                                <span class="supplement-name">Citrulline Malate</span>
+                                <span class="supplement-dosage">6-8g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Post-Workout</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">🥛</div>
+                                <span class="supplement-name">Whey Protein Isolate</span>
+                                <span class="supplement-dosage">25-30g</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">🔗</div>
+                                <span class="supplement-name">BCAAs (optional)</span>
+                                <span class="supplement-dosage">5g</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Evening</h4>
+                        <ul class="supplement-list">
+                            <li>
+                                <div class="supplement-icon">🌙</div>
+                                <span class="supplement-name">Magnesium Glycinate</span>
+                                <span class="supplement-dosage">400mg</span>
+                            </li>
+                            <li>
+                                <div class="supplement-icon">😴</div>
+                                <span class="supplement-name">Casein Protein (optional)</span>
+                                <span class="supplement-dosage">20-30g</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Tab -->
+        <div id="plan-tab" class="tab-content">
+            <div class="plan-section">
+                <!-- Workout Program -->
+                <div class="content-card">
+                    <div class="content-card-title">7-Day Training Split</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Day 1: Quad Focus (Monday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Leg Extension <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hack Squat or Leg Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Bulgarian Split Squat <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Sissy Squat <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 2: Hamstring Stretch (Tuesday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Lying Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Romanian Deadlift <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Seated Hamstring Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Glute-Ham Raise <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 3: Rest Day (Wednesday)</h4>
+                        <div class="rest-day">Active Recovery: Light stretching, yoga, or walking</div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 4: Glute Focus (Thursday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hip Thrust <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Smith Machine Reverse Lunge <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Cable Kickback <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Abductor Machine <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 5: Upper Body Push/Pull (Friday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Chest Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Cable Row <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Shoulder Press <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Bicep Curl <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 6: Abs & Core (Saturday)</h4>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Plank Hold <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × 60s</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Russian Twists <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Hanging Leg Raises <span class="badge-isolation">ISOLATION</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                        <div class="exercise-list-item">
+                            <span class="exercise-list-name">Mountain Climbers <span class="badge-compound">COMPOUND</span></span>
+                            <span class="exercise-list-sets">1 × Failure</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Day 7: Rest Day (Sunday)</h4>
+                        <div class="rest-day">Full Recovery: Focus on nutrition, sleep, and hydration</div>
+                    </div>
+                </div>
+
+                <!-- Movement Focus -->
+                <div class="content-card">
+                    <div class="content-card-title">Movement & Form Guidelines</div>
+                    
+                    <div class="plan-subsection">
+                        <h4>Mind-Muscle Connection</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>Visualize the Target</strong>
+                                Before each rep, mentally picture the muscle contracting and stretching under tension.
+                            </li>
+                            <li>
+                                <strong>Controlled Tempo</strong>
+                                Use a 2-1-2 tempo: 2 seconds lowering, 1 second squeeze, 2 seconds lifting.
+                            </li>
+                            <li>
+                                <strong>Focus on Sensation</strong>
+                                Concentrate on feeling the muscle work, not just moving the weight from point A to B.
+                            </li>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Essential Form Cues</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>Leg Exercises</strong>
+                                Core engaged, knees tracking over toes, full range of motion, maintain neutral spine.
+                            </li>
+                            <li>
+                                <strong>Upper Body</strong>
+                                Shoulders back and down, chest up, controlled breathing, stable core throughout.
+                            </li>
+                            <li>
+                                <strong>Hip Thrusts</strong>
+                                Squeeze glutes at top, keep ribs down, posterior pelvic tilt, full hip extension.
+                            </li>
+                            <li>
+                                <strong>Core Work</strong>
+                                Brace abs as if taking a punch, breathe through nose, maintain neutral spine position.
+                            </li>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Breathing Technique</h4>
+                        <div class="info-box">
+                            <div class="info-box-title">
+                                <span>🫁</span>
+                                <span>Proper Breathing Pattern</span>
+                            </div>
+                            <div class="info-box-content">
+                                <strong>Eccentric (lowering):</strong> Breathe IN deeply through nose<br>
+                                <strong>Concentric (lifting):</strong> Breathe OUT forcefully through mouth<br>
+                                <strong>Peak contraction:</strong> Hold breath and squeeze for 1 second
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="plan-subsection">
+                        <h4>Training to Failure</h4>
+                        <div class="tips-list">
+                            <li>
+                                <strong>True Muscular Failure</strong>
+                                Cannot complete another rep with proper form despite maximum effort.
+                            </li>
+                            <li>
+                                <strong>Form Breakdown = Stop</strong>
+                                End the set immediately if technique deteriorates. Injury prevention is priority.
+                            </li>
+                            <li>
+                                <strong>Positive Failure</strong>
+                                For safety on certain exercises, stop when you can't lift the weight (before lowering phase).
+                            </li>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -900,7 +1596,7 @@
     <!-- Timer Modal -->
     <div class="timer-modal" id="timer-modal">
         <div class="timer-modal-content">
-            <h3 style="font-family: 'Chewy'; font-size: 1.5rem; margin-bottom: 16px;">Rest Timer</h3>
+            <h3 class="timer-modal-title">Rest Timer</h3>
             <div class="timer-display" id="timer-display">03:00</div>
             <div class="timer-presets">
                 <div class="timer-preset" onclick="setRestTime(60)">1:00</div>
@@ -919,11 +1615,11 @@
     <div class="completion-modal" id="completion-modal">
         <div class="completion-content">
             <div class="completion-icon">🎉</div>
-            <div class="completion-title">WORKOUT CRUSHED!</div>
+            <div class="completion-title">Workout Complete!</div>
             <div class="completion-stats" id="completion-stats"></div>
             <div class="completion-quote">"The pain you feel today will be the strength you feel tomorrow"</div>
             <button class="nav-btn nav-btn-primary" style="width: 100%;" onclick="closeCompletionModal()">
-                Awesome! 💪
+                Continue
             </button>
         </div>
     </div>
@@ -962,7 +1658,7 @@
                 name: "Day 5: Upper Body",
                 exercises: [
                     {name: "Chest Press", sets: 1, reps: "Failure", type: "compound"},
-                    {name: "Row", sets: 1, reps: "Failure", type: "compound"},
+                    {name: "Cable Row", sets: 1, reps: "Failure", type: "compound"},
                     {name: "Shoulder Press", sets: 1, reps: "Failure", type: "compound"},
                     {name: "Bicep Curl", sets: 1, reps: "Failure", type: "isolation"}
                 ]
@@ -970,9 +1666,9 @@
             day6: {
                 name: "Day 6: Abs/Core",
                 exercises: [
-                    {name: "Plank", sets: 1, reps: "60s", type: "isolation"},
+                    {name: "Plank Hold", sets: 1, reps: "60s", type: "isolation"},
                     {name: "Russian Twists", sets: 1, reps: "Failure", type: "isolation"},
-                    {name: "Leg Raises", sets: 1, reps: "Failure", type: "isolation"},
+                    {name: "Hanging Leg Raises", sets: 1, reps: "Failure", type: "isolation"},
                     {name: "Mountain Climbers", sets: 1, reps: "Failure", type: "compound"}
                 ]
             }
@@ -985,6 +1681,8 @@
         let timerInterval = null;
         let timerSeconds = 180;
         let timerRunning = false;
+        let volumeChart = null;
+        let exerciseCharts = [];
 
         // Storage Helper
         const storage = {
@@ -1004,6 +1702,10 @@
 
         // Initialize
         function init() {
+            if (typeof Chart !== 'undefined') {
+                Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            }
+
             document.getElementById('workout-date').valueAsDate = new Date();
             const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
             const dayMap = {Monday: 'day1', Tuesday: 'day2', Thursday: 'day4', Friday: 'day5', Saturday: 'day6'};
@@ -1021,18 +1723,15 @@
             });
         }
 
-        // Load Workout
         function loadWorkout() {
             currentExerciseIndex = 0;
             sessionData = {};
             const workout = workoutData[currentDay];
             if (!workout) return;
-
             updateProgress();
             renderExercise();
         }
 
-        // Render Current Exercise
         function renderExercise() {
             const workout = workoutData[currentDay];
             if (!workout) return;
@@ -1041,7 +1740,6 @@
             const exIdx = currentExerciseIndex;
             const numSets = parseInt(exercise.sets) || 1;
 
-            // Get PR data
             const prs = storage.get('personalRecords', {});
             const pr = prs[exercise.name];
             const history = storage.get('workoutHistory', []);
@@ -1070,9 +1768,8 @@
                     </div>
             `;
 
-            // PR Display
             if (pr || lastTime) {
-                html += `<div class="pr-display"><div class="pr-display-title">📊 Your Stats</div><div class="pr-display-stats">`;
+                html += `<div class="pr-display"><div class="pr-display-title">Your Stats</div><div class="pr-display-stats">`;
                 if (lastTime) {
                     html += `<div class="pr-stat"><div class="pr-stat-label">Last Time</div><div class="pr-stat-value">${lastTime.weight} × ${lastTime.reps}</div></div>`;
                 }
@@ -1082,7 +1779,6 @@
                 html += `</div></div>`;
             }
 
-            // Sets
             for (let i = 1; i <= numSets; i++) {
                 const setData = sessionData[exIdx]?.sets?.[i] || {};
                 const completed = setData.weight && setData.reps;
@@ -1106,12 +1802,10 @@
                 `;
             }
 
-            // Quick Notes
             html += `
                 <div class="quick-notes">
-                    <textarea id="notes-${exIdx}" placeholder="Quick notes (optional)...">${sessionData[exIdx]?.notes || ''}</textarea>
+                    <textarea id="notes-${exIdx}" placeholder="Notes (optional)...">${sessionData[exIdx]?.notes || ''}</textarea>
                 </div>
-
                 <div class="nav-buttons">
                     <button class="nav-btn nav-btn-secondary" onclick="prevExercise()" ${currentExerciseIndex === 0 ? 'disabled' : ''}>
                         ← Previous
@@ -1125,7 +1819,6 @@
             document.getElementById('current-exercise-container').innerHTML = html;
         }
 
-        // Handle Input
         function handleInput(exIdx, setNum) {
             if (!sessionData[exIdx]) sessionData[exIdx] = {sets: {}, notes: ''};
             
@@ -1139,10 +1832,8 @@
             }
         }
 
-        // Navigation
         function nextExercise() {
             const workout = workoutData[currentDay];
-            // Save notes
             const notes = document.getElementById(`notes-${currentExerciseIndex}`);
             if (notes) {
                 if (!sessionData[currentExerciseIndex]) sessionData[currentExerciseIndex] = {sets: {}, notes: ''};
@@ -1166,7 +1857,6 @@
             }
         }
 
-        // Update Progress
         function updateProgress() {
             const workout = workoutData[currentDay];
             if (!workout) return;
@@ -1183,25 +1873,24 @@
             });
 
             const percentage = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
-            const circumference = 2 * Math.PI * 52;
+            const circumference = 2 * Math.PI * 58;
             const offset = circumference - (percentage / 100) * circumference;
 
             document.getElementById('progress-circle').style.strokeDashoffset = offset;
             document.getElementById('progress-text').textContent = `${completedSets}/${totalSets}`;
 
             if (completedSets === 0) {
-                document.getElementById('progress-label').textContent = "Ready to crush it!";
+                document.getElementById('progress-label').textContent = "Ready to Begin";
                 document.getElementById('progress-sublabel').textContent = `${workout.exercises.length} exercises today`;
             } else if (completedSets === totalSets) {
-                document.getElementById('progress-label').textContent = "Workout Complete!";
-                document.getElementById('progress-sublabel').textContent = "Time to save 💪";
+                document.getElementById('progress-label').textContent = "Workout Complete";
+                document.getElementById('progress-sublabel').textContent = "Ready to save";
             } else {
                 document.getElementById('progress-label').textContent = `${Math.round(percentage)}% Complete`;
                 document.getElementById('progress-sublabel').textContent = `${totalSets - completedSets} sets remaining`;
             }
         }
 
-        // Save Workout
         function saveWorkout() {
             const workout = workoutData[currentDay];
             const date = document.getElementById('workout-date').value;
@@ -1215,7 +1904,7 @@
             const totalSets = exercises.reduce((sum, ex) => sum + Object.keys(ex.sets).length, 0);
 
             if (totalSets === 0) {
-                alert('No sets logged! Add some data first.');
+                alert('No sets logged. Please add workout data first.');
                 return;
             }
 
@@ -1234,7 +1923,6 @@
             updatePRs(exercises);
             showCompletionModal(workoutEntry);
             
-            // Reset
             sessionData = {};
             currentExerciseIndex = 0;
             renderExercise();
@@ -1244,7 +1932,6 @@
             renderCalendar();
         }
 
-        // Update PRs
         function updatePRs(exercises) {
             const prs = storage.get('personalRecords', {});
             
@@ -1259,27 +1946,25 @@
             storage.set('personalRecords', prs);
         }
 
-        // Show Completion Modal
         function showCompletionModal(workout) {
             const modal = document.getElementById('completion-modal');
             modal.classList.add('active');
 
-            // Confetti
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
                     confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.background = ['#FF1493', '#E91E63', '#A855F7', '#10B981'][Math.floor(Math.random() * 4)];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.background = ['#4A90E2', '#9B7EBD', '#E87DAB', '#10B981'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.4 + 's';
                     modal.querySelector('.completion-content').appendChild(confetti);
                     setTimeout(() => confetti.remove(), 3000);
-                }, i * 20);
+                }, i * 25);
             }
 
             document.getElementById('completion-stats').innerHTML = `
                 <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
-                <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises crushed</div>
+                <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
                 <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
             `;
         }
@@ -1288,7 +1973,6 @@
             document.getElementById('completion-modal').classList.remove('active');
         }
 
-        // Timer Functions
         function openTimer() {
             document.getElementById('timer-modal').classList.add('active');
         }
@@ -1325,7 +2009,7 @@
 
                 if (timerSeconds <= 0) {
                     stopTimer();
-                    alert('⏰ Rest time complete! Time for your next set!');
+                    alert('Rest period complete!');
                     if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
                     timerSeconds = 180;
                     updateTimerDisplay();
@@ -1354,7 +2038,6 @@
             }
         }
 
-        // Tab Switching
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -1362,14 +2045,14 @@
             event.target.classList.add('active');
             document.getElementById(`${tab}-tab`).classList.add('active');
 
-            if (tab === 'analytics') renderAnalytics();
+            if (tab === 'stats') renderAnalytics();
             if (tab === 'history') {
                 renderHistory();
                 renderCalendar();
             }
+            if (tab === 'charts') renderCharts();
         }
 
-        // Render Analytics
         function renderAnalytics() {
             const history = storage.get('workoutHistory', []);
             const prs = storage.get('personalRecords', {});
@@ -1378,7 +2061,6 @@
             document.getElementById('total-sets').textContent = history.reduce((sum, w) => sum + w.totalVolume, 0);
             document.getElementById('prs-count').textContent = Object.keys(prs).length;
 
-            // Streak calculation
             const sortedDates = history.map(w => new Date(w.date)).sort((a, b) => b - a);
             let streak = 0;
             if (sortedDates.length > 0) {
@@ -1404,11 +2086,10 @@
             }
             document.getElementById('current-streak').textContent = streak;
 
-            // PR List
             const prEntries = Object.entries(prs).sort((a, b) => b[1].tonnage - a[1].tonnage);
             let prHtml = '';
             if (prEntries.length === 0) {
-                prHtml = '<div style="text-align: center; color: var(--text-medium); padding: 20px;">No PRs yet - start crushing it!</div>';
+                prHtml = '<div style="text-align: center; color: var(--text-secondary); padding: 24px;">No personal records yet</div>';
             } else {
                 prEntries.forEach(([name, pr]) => {
                     prHtml += `
@@ -1422,13 +2103,12 @@
             document.getElementById('pr-list-content').innerHTML = prHtml;
         }
 
-        // Render History
         function renderHistory() {
             const history = storage.get('workoutHistory', []).sort((a, b) => new Date(b.date) - new Date(a.date));
             
             let html = '';
             if (history.length === 0) {
-                html = '<div style="text-align: center; color: var(--text-medium); padding: 20px;">No workouts logged yet</div>';
+                html = '<div style="text-align: center; color: var(--text-secondary); padding: 24px;">No workouts logged yet</div>';
             } else {
                 history.slice(0, 20).forEach(w => {
                     html += `
@@ -1437,8 +2117,8 @@
                                 <div class="history-date">${new Date(w.date).toLocaleDateString()}</div>
                                 <div class="history-sets">${w.totalVolume} sets</div>
                             </div>
-                            <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">${w.name}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-medium);">
+                            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 6px;">${w.name}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
                                 ${w.exercises.map(e => e.name).join(', ')}
                             </div>
                         </div>
@@ -1448,7 +2128,6 @@
             document.getElementById('history-list-content').innerHTML = html;
         }
 
-        // Render Calendar
         function renderCalendar() {
             const history = storage.get('workoutHistory', []);
             const workoutDates = new Set(history.map(w => w.date));
@@ -1459,17 +2138,14 @@
             
             let html = '';
             
-            // Day headers
             ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
-                html += `<div style="text-align: center; font-weight: 700; color: var(--text-medium); padding: 4px;">${d}</div>`;
+                html += `<div style="text-align: center; font-weight: 700; color: var(--text-secondary); padding: 6px; font-size: 0.75rem;">${d}</div>`;
             });
             
-            // Empty cells for offset
             for (let i = 0; i < firstDay.getDay(); i++) {
                 html += '<div></div>';
             }
             
-            // Days
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(today.getFullYear(), today.getMonth(), day);
                 const dateStr = date.toISOString().split('T')[0];
@@ -1482,7 +2158,164 @@
             document.getElementById('calendar-grid').innerHTML = html;
         }
 
-        // Initialize app
+        function renderCharts() {
+            const history = storage.get('workoutHistory', []);
+            
+            if (history.length === 0) {
+                document.getElementById('volume-chart').parentElement.innerHTML = 
+                    '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">Log workouts to see progress charts</div>';
+                return;
+            }
+
+            const sortedHistory = history.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+            const labels = sortedHistory.map(w => new Date(w.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}));
+            const data = sortedHistory.map(w => w.totalVolume);
+
+            const ctx = document.getElementById('volume-chart').getContext('2d');
+            if (volumeChart) volumeChart.destroy();
+
+            volumeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Sets',
+                        data: data,
+                        borderColor: '#4A90E2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.08)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#4A90E2',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#64748B',
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#64748B',
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const exerciseData = {};
+            history.forEach(w => {
+                w.exercises.forEach(ex => {
+                    if (!exerciseData[ex.name]) exerciseData[ex.name] = [];
+                    const bestSet = Object.values(ex.sets).reduce((best, set) => 
+                        set.tonnage > best.tonnage ? set : best, {tonnage: 0});
+                    if (bestSet.tonnage > 0) {
+                        exerciseData[ex.name].push({date: w.date, tonnage: bestSet.tonnage});
+                    }
+                });
+            });
+
+            const exerciseFreq = Object.keys(exerciseData).map(name => ({
+                name,
+                count: exerciseData[name].length
+            })).sort((a, b) => b.count - a.count).slice(0, 4);
+
+            const container = document.getElementById('exercise-charts-container');
+            container.innerHTML = '';
+            exerciseCharts.forEach(c => c.destroy());
+            exerciseCharts = [];
+
+            const colors = ['#4A90E2', '#9B7EBD', '#10B981', '#F59E0B'];
+
+            exerciseFreq.forEach((ex, idx) => {
+                const exData = exerciseData[ex.name].sort((a, b) => new Date(a.date) - new Date(b.date));
+                
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-container';
+                chartDiv.innerHTML = `
+                    <div class="chart-title">${ex.name}</div>
+                    <canvas id="ex-chart-${idx}" class="chart-canvas"></canvas>
+                `;
+                container.appendChild(chartDiv);
+
+                const ctx = document.getElementById(`ex-chart-${idx}`).getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: exData.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
+                        datasets: [{
+                            label: 'Effective Strength',
+                            data: exData.map(d => d.tonnage.toFixed(0)),
+                            borderColor: colors[idx],
+                            backgroundColor: `${colors[idx]}15`,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointBackgroundColor: colors[idx],
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#64748B',
+                                    font: { size: 11 }
+                                },
+                                grid: {
+                                    color: 'rgba(226, 232, 240, 0.5)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#64748B',
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: { size: 10 }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                exerciseCharts.push(chart);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
