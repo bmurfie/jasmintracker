@@ -57,19 +57,11 @@ let timerInterval = null;
 let timerSeconds = 180;
 let timerRunning = false;
 let volumeChart = null;
-let weightChart = null; 
 let exerciseCharts = [];
 let currentWorkoutRating = 0;
 let currentWorkoutTags = [];
 
-// E1RM Calculator (Brzycki Formula)
-function calculateE1RM(weight, reps) {
-    if (reps === 1) return weight;
-    if (reps > 15 || weight === 0 || reps === 0) return 0;
-    return Math.round(weight / (1.0278 - 0.0278 * reps));
-}
-
-// Robust Storage Helper
+// NEW: Robust Storage Helper with availability check
 const storage = {
     isAvailable: () => {
         try {
@@ -97,29 +89,13 @@ const storage = {
     }
 };
 
-// Auto-Focus Utility
-function autoAdvanceFocus(exIdx, setNum, isWeight) {
-    // 1. Focus on reps field
-    if (isWeight) {
-        document.getElementById(`reps-${exIdx}-${setNum}`).focus();
-        return;
-    }
-
-    // 2. Focus on next set's weight field
-    const nextSetNum = setNum + 1;
-    const nextWeightField = document.getElementById(`weight-${exIdx}-${nextSetNum}`);
-    if (nextWeightField) {
-        nextWeightField.focus();
-    }
-}
-
-// Centralized Event Listener Setup
+// NEW: Centralized Event Listener Setup
 function setupEventListeners() {
-    // Tab Switching 
+    // Tab Switching (Handle click on all tab buttons)
     document.querySelectorAll('.tab-bar .tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const tabName = btn.getAttribute('data-tab');
-            if (tabName) switchTab(tabName, btn);
+            if (tabName) switchTab(tabName);
         });
     });
 
@@ -127,22 +103,19 @@ function setupEventListeners() {
     document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
 
     // Save Workout Button
-    const saveBtn = document.getElementById('save-workout-btn');
-    if (saveBtn) saveBtn.addEventListener('click', saveWorkout);
+    document.getElementById('save-workout-btn').addEventListener('click', saveWorkout);
 
     // Analytics Quick Actions
-    const logWeightBtn = document.getElementById('log-body-weight-btn');
-    if (logWeightBtn) logWeightBtn.addEventListener('click', showBodyWeightLog);
-
-    const exportBtn = document.getElementById('export-data-btn');
-    if (exportBtn) exportBtn.addEventListener('click', exportWorkoutData);
+    document.getElementById('log-body-weight-btn').addEventListener('click', showBodyWeightLog);
+    document.getElementById('export-data-btn').addEventListener('click', exportWorkoutData);
     
-    // Day Select Change
+    // Day Select Change (Kept from original logic)
     document.getElementById('day-select').addEventListener('change', (e) => {
         currentDay = e.target.value;
         loadWorkout();
     });
 }
+
 
 // Initialize
 function init() {
@@ -150,24 +123,20 @@ function init() {
         Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
     }
 
+    // Load dark mode preference
     const darkMode = storage.get('darkMode', false);
     if (darkMode) {
         document.body.classList.add('dark-mode');
-        const icon = document.getElementById('dark-mode-icon');
-        if (icon) icon.textContent = '☀️';
+        document.getElementById('dark-mode-icon').textContent = '☀️';
     }
 
-    const dateInput = document.getElementById('workout-date');
-    if (dateInput) dateInput.valueAsDate = new Date();
-    
+    document.getElementById('workout-date').valueAsDate = new Date();
     const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
     const dayMap = {Monday: 'day1', Tuesday: 'day2', Thursday: 'day4', Friday: 'day5', Saturday: 'day6'};
     currentDay = dayMap[today] || 'day1';
+    document.getElementById('day-select').value = currentDay;
     
-    const daySelect = document.getElementById('day-select');
-    if (daySelect) daySelect.value = currentDay;
-    
-    setupEventListeners();
+    setupEventListeners(); // NEW: Call centralized listener setup
 
     loadWorkout();
     renderAnalytics();
@@ -199,12 +168,13 @@ function renderExercise() {
         w.exercises.some(e => e.name === exercise.name)
     ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
     
-    let lastSetData = null;
+    let lastTime = null;
     if (lastWorkout) {
         const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
         if (lastEx && lastEx.sets && Object.keys(lastEx.sets).length > 0) {
-            // Use best set (by tonnage) from last workout for display/copy
-            lastSetData = Object.values(lastEx.sets).sort((a, b) => b.tonnage - a.tonnage)[0];
+            // Get the best or first set's data for display
+            const firstSetKey = Object.keys(lastEx.sets)[0];
+            lastTime = lastEx.sets[firstSetKey];
         }
     }
 
@@ -221,18 +191,13 @@ function renderExercise() {
             </div>
     `;
 
-    if (pr || lastSetData) {
+    if (pr || lastTime) {
         html += `<div class="pr-display"><div class="pr-display-title">Your Stats</div><div class="pr-display-stats">`;
-        
-        if (lastSetData) {
-            const e1rm = calculateE1RM(lastSetData.weight, lastSetData.reps);
-            html += `<div class="pr-stat"><div class="pr-stat-label">Last Set</div><div class="pr-stat-value">${lastSetData.weight} × ${lastSetData.reps}</div></div>`;
-            if(e1rm > 0) html += `<div class="pr-stat"><div class="pr-stat-label">Last E1RM</div><div class="pr-stat-value">${e1rm} lbs</div></div>`;
+        if (lastTime) {
+            html += `<div class="pr-stat"><div class="pr-stat-label">Last Time</div><div class="pr-stat-value">${lastTime.weight} × ${lastTime.reps}</div></div>`;
         }
         if (pr) {
-            const e1rm = pr.e1rm || calculateE1RM(pr.weight, pr.reps);
             html += `<div class="pr-stat"><div class="pr-stat-label">Your PR</div><div class="pr-stat-value">${pr.weight} × ${pr.reps}</div></div>`;
-            if(e1rm > 0) html += `<div class="pr-stat"><div class="pr-stat-label">PR E1RM</div><div class="pr-stat-value">${e1rm} lbs</div></div>`;
         }
         html += `</div></div>`;
     }
@@ -241,25 +206,26 @@ function renderExercise() {
         const setData = sessionData[exIdx]?.sets?.[i] || {};
         const completed = setData.completed === true;
         
-        const hasPrevious = lastSetData || pr;
+        // Check if there's previous data for this set
+        const hasPrevious = lastTime || pr;
         
         html += `
             <div class="set-input ${completed ? 'completed' : ''}">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div class="set-label">Set ${i}</div>
-                    <button class="copy-last-btn" onclick="copyLastWorkout(${exIdx}, ${i})" ${hasPrevious ? '' : 'disabled'}>📋 Smart Copy</button>
+                    <button class="copy-last-btn" onclick="copyLastWorkout(${exIdx}, ${i})" ${hasPrevious ? '' : 'disabled'}>📋 Copy Last</button>
                 </div>
                 <div class="set-fields">
                     <div class="set-field">
                         <label>Weight (lbs)</label>
                         <input type="number" id="weight-${exIdx}-${i}" value="${setData.weight || ''}" 
-                               oninput="handleInput(${exIdx}, ${i}, true)" min="0" step="0.5">
+                               oninput="handleInput(${exIdx}, ${i})" min="0" step="0.5">
                     </div>
                     <div class="set-multiplier">×</div>
                     <div class="set-field">
                         <label>Reps</label>
                         <input type="number" id="reps-${exIdx}-${i}" value="${setData.reps || ''}"
-                               oninput="handleInput(${exIdx}, ${i}, false)" min="0" step="1">
+                               oninput="handleInput(${exIdx}, ${i})" min="0" step="1">
                     </div>
                 </div>
             </div>
@@ -280,28 +246,25 @@ function renderExercise() {
         </div>
     </div>`;
 
-    const container = document.getElementById('current-exercise-container');
-    if (container) container.innerHTML = html;
+    document.getElementById('current-exercise-container').innerHTML = html;
 }
 
-function handleInput(exIdx, setNum, isWeightInput) {
+function handleInput(exIdx, setNum) {
     if (!sessionData[exIdx]) sessionData[exIdx] = {sets: {}, notes: ''};
     
-    const weightEl = document.getElementById(`weight-${exIdx}-${setNum}`);
-    const repsEl = document.getElementById(`reps-${exIdx}-${setNum}`);
+    const weight = parseFloat(document.getElementById(`weight-${exIdx}-${setNum}`).value) || 0;
+    const reps = parseInt(document.getElementById(`reps-${exIdx}-${setNum}`).value) || 0;
     
-    const weight = parseFloat(weightEl?.value) || 0;
-    const reps = parseInt(repsEl?.value) || 0;
-    
+    // Store the data, calculating tonnage
     const tonnage = weight * reps;
-    const e1rm = calculateE1RM(weight, reps);
 
     if (weight > 0 && reps > 0) {
-        sessionData[exIdx].sets[setNum] = {weight, reps, tonnage, e1rm, completed: false};
-        autoAdvanceFocus(exIdx, setNum, isWeightInput);
+        sessionData[exIdx].sets[setNum] = {weight, reps, tonnage, completed: false};
     } else if (weight || reps) {
-        sessionData[exIdx].sets[setNum] = {weight: weight, reps: reps, tonnage: 0, e1rm: 0, completed: false};
+        // Partial data
+        sessionData[exIdx].sets[setNum] = {weight: weight, reps: reps, tonnage: 0, completed: false};
     } else {
+        // Empty fields - remove set data if it exists
         if (sessionData[exIdx].sets[setNum]) {
             delete sessionData[exIdx].sets[setNum];
         }
@@ -316,31 +279,25 @@ function nextExercise() {
         sessionData[currentExerciseIndex].notes = notes.value;
     }
 
-    let anySetLogged = false;
+    // Mark all sets for this exercise as completed when moving to next
     if (sessionData[currentExerciseIndex]?.sets) {
         Object.keys(sessionData[currentExerciseIndex].sets).forEach(setNum => {
             const set = sessionData[currentExerciseIndex].sets[setNum];
             if (set.weight > 0 && set.reps > 0) {
                 set.completed = true;
-                anySetLogged = true;
             }
         });
     }
 
+    // Update progress after marking complete
     updateProgress();
 
     if (currentExerciseIndex < workout.exercises.length - 1) {
         currentExerciseIndex++;
         renderExercise();
-        
-        // Auto-start timer after completing an exercise
-        if (anySetLogged) {
-            stopTimer(); 
-            setRestTime(180); 
-            startTimer();
-        }
     } else {
-        document.getElementById('save-workout-btn')?.click();
+        // Call save workout if it's the last exercise
+        document.getElementById('save-workout-btn').click(); 
     }
 }
 
@@ -362,6 +319,7 @@ function updateProgress() {
     workout.exercises.forEach((ex, idx) => {
         const sets = parseInt(ex.sets) || 1;
         totalSets += sets;
+        // Count valid, non-empty sets as completed
         if (sessionData[idx]?.sets) {
             completedSets += Object.values(sessionData[idx].sets).filter(set => set.weight > 0 && set.reps > 0).length;
         }
@@ -371,27 +329,22 @@ function updateProgress() {
     const circumference = 2 * Math.PI * 58;
     const offset = circumference - (percentage / 100) * circumference;
 
-    const circle = document.getElementById('progress-circle');
-    if (circle) circle.style.strokeDashoffset = offset;
-    
-    const text = document.getElementById('progress-text');
-    if (text) text.textContent = `${completedSets}/${totalSets}`;
-
-    const label = document.getElementById('progress-label');
-    const sublabel = document.getElementById('progress-sublabel');
+    document.getElementById('progress-circle').style.strokeDashoffset = offset;
+    document.getElementById('progress-text').textContent = `${completedSets}/${totalSets}`;
 
     if (completedSets === 0) {
-        if (label) label.textContent = "Ready to Begin";
-        if (sublabel) sublabel.textContent = `${workout.exercises.length} exercises today`;
-    } else if (completedSets >= totalSets) { 
-        if (label) label.textContent = "Workout Complete";
-        if (sublabel) sublabel.textContent = "Ready to save";
+        document.getElementById('progress-label').textContent = "Ready to Begin";
+        document.getElementById('progress-sublabel').textContent = `${workout.exercises.length} exercises today`;
+    } else if (completedSets >= totalSets) { // >= in case of extra sets logged
+        document.getElementById('progress-label').textContent = "Workout Complete";
+        document.getElementById('progress-sublabel').textContent = "Ready to save";
     } else {
-        if (label) label.textContent = `${Math.round(percentage)}% Complete`;
-        if (sublabel) sublabel.textContent = `${totalSets - completedSets} sets remaining`;
+        document.getElementById('progress-label').textContent = `${Math.round(percentage)}% Complete`;
+        document.getElementById('progress-sublabel').textContent = `${totalSets - completedSets} sets remaining`;
     }
 }
 
+// UPDATED: Function to save workout (now includes unique ID)
 function saveWorkout() {
     const workout = workoutData[currentDay];
     const date = document.getElementById('workout-date').value;
@@ -415,7 +368,7 @@ function saveWorkout() {
     }
 
     const workoutEntry = {
-        id: Date.now(), 
+        id: Date.now(), // 👈 CRITICAL: Assign unique ID
         date,
         day: currentDay,
         name: workout.name,
@@ -447,7 +400,7 @@ function saveWorkout() {
 
 function showCompletionModal(workout) {
     const modal = document.getElementById('completion-modal');
-    if (modal) modal.classList.add('active');
+    modal.classList.add('active');
 
     for (let i = 0; i < 40; i++) {
         setTimeout(() => {
@@ -456,26 +409,25 @@ function showCompletionModal(workout) {
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = ['#4A90E2', '#9B7EBD', '#E87DAB', '#10B981'][Math.floor(Math.random() * 4)];
             confetti.style.animationDelay = Math.random() * 0.4 + 's';
-            modal.querySelector('.completion-content')?.appendChild(confetti);
+            modal.querySelector('.completion-content').appendChild(confetti);
             setTimeout(() => confetti.remove(), 3000);
         }, i * 25);
     }
 
-    const stats = document.getElementById('completion-stats');
-    if (stats) {
-        stats.innerHTML = `
-            <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
-            <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
-            <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
-            <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
-        `;
-    }
+    document.getElementById('completion-stats').innerHTML = `
+        <div class="completion-stat"><strong>${workout.totalVolume}</strong> sets completed</div>
+        <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
+        <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
+        <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
+    `;
     
+    // Reset rating UI
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
 }
 
 function closeCompletionModal() {
+    // Save rating and tags to the last workout
     const history = storage.get('workoutHistory', []);
     if (history.length > 0 && (currentWorkoutRating > 0 || currentWorkoutTags.length > 0)) {
         history[history.length - 1].rating = currentWorkoutRating;
@@ -483,31 +435,30 @@ function closeCompletionModal() {
         storage.set('workoutHistory', history);
     }
     
-    const modal = document.getElementById('completion-modal');
-    if (modal) modal.classList.remove('active');
+    document.getElementById('completion-modal').classList.remove('active');
 }
 
 function openTimer() {
-    const modal = document.getElementById('timer-modal');
-    if (modal) modal.classList.add('active');
+    document.getElementById('timer-modal').classList.add('active');
 }
 
 function closeTimer() {
-    const modal = document.getElementById('timer-modal');
-    if (modal) modal.classList.remove('active');
+    document.getElementById('timer-modal').classList.remove('active');
 }
 
 function setRestTime(seconds) {
     if (timerRunning) return;
     timerSeconds = seconds;
     updateTimerDisplay();
+    // Update active class for preset button
     document.querySelectorAll('.timer-preset').forEach(p => p.classList.remove('active'));
-    
-    // Logic to highlight the active preset button
-    const presets = [60, 180, 300, 420];
-    const index = presets.indexOf(seconds);
-    if (index > -1) {
-        document.querySelector(`.timer-presets .timer-preset:nth-child(${index + 1})`)?.classList.add('active');
+    // Use event.target when called from inline onclick
+    if (event && event.target) { 
+        event.target.classList.add('active');
+    } else {
+        // Fallback for programmatic call (should manually find the matching button if needed)
+        const presetBtn = document.querySelector(`.timer-presets .timer-preset:nth-child(${[60, 180, 300, 420].indexOf(seconds) + 1})`);
+        if (presetBtn) presetBtn.classList.add('active');
     }
 }
 
@@ -522,8 +473,8 @@ function toggleTimer() {
 function startTimer() {
     timerRunning = true;
     document.getElementById('timer-start-btn').textContent = 'Pause';
-    document.querySelector('.timer-display')?.classList.add('running');
-    document.querySelector('.floating-timer')?.classList.add('running');
+    document.querySelector('.timer-display').classList.add('running');
+    document.querySelector('.floating-timer').classList.add('running');
 
     timerInterval = setInterval(() => {
         timerSeconds--;
@@ -533,7 +484,7 @@ function startTimer() {
             stopTimer();
             alert('Rest period complete!');
             if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
-            timerSeconds = 180; 
+            timerSeconds = 180; // Reset to 3:00 after alert
             setRestTime(180);
             updateTimerDisplay();
         }
@@ -544,29 +495,33 @@ function stopTimer() {
     timerRunning = false;
     clearInterval(timerInterval);
     document.getElementById('timer-start-btn').textContent = 'Start';
-    document.querySelector('.timer-display')?.classList.remove('running');
-    document.querySelector('.floating-timer')?.classList.remove('running');
+    document.querySelector('.timer-display').classList.remove('running');
+    document.querySelector('.floating-timer').classList.remove('running');
 }
 
 function updateTimerDisplay() {
     const mins = Math.floor(timerSeconds / 60);
     const secs = timerSeconds % 60;
     const display = `${mins}:${secs.toString().padStart(2, '0')}`;
-    const timerDisplay = document.getElementById('timer-display');
-    if (timerDisplay) timerDisplay.textContent = display;
+    document.getElementById('timer-display').textContent = display;
     
-    const floatIcon = document.getElementById('timer-float-icon');
-    if (floatIcon) floatIcon.textContent = timerRunning ? display : '⏱️';
+    if (timerRunning) {
+        document.getElementById('timer-float-icon').textContent = display;
+    } else {
+        document.getElementById('timer-float-icon').textContent = '⏱️';
+    }
 }
 
-function switchTab(tab, clickedButton) {
+// UPDATED: Function to switch tabs
+function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    if (clickedButton) clickedButton.classList.add('active');
+    // Find the correct button using the data-tab attribute
+    const activeBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
 
-    const tabContent = document.getElementById(`${tab}-tab`);
-    if (tabContent) tabContent.classList.add('active');
+    document.getElementById(`${tab}-tab`).classList.add('active');
 
     if (tab === 'stats') renderAnalytics();
     if (tab === 'history') {
@@ -594,17 +549,21 @@ function renderAnalytics() {
         
         const dayInMillis = 86400000;
 
+        // Check if last workout was today or yesterday
         if (checkDate.getTime() === today.getTime() || checkDate.getTime() === today.getTime() - dayInMillis) {
             streak = 1;
             let lastCheckedTime = checkDate.getTime();
             
+            // Loop through history backwards to find consecutive days
             for (let i = 1; i < sortedDates.length; i++) {
                 const prevDate = new Date(sortedDates[i]);
                 prevDate.setHours(0, 0, 0, 0);
                 const prevTime = prevDate.getTime();
 
+                // Skip duplicates
                 if (prevTime === lastCheckedTime) continue;
                 
+                // Check if it's the day before the last checked day
                 if (lastCheckedTime - prevTime === dayInMillis) {
                     streak++;
                     lastCheckedTime = prevTime;
@@ -633,6 +592,7 @@ function renderAnalytics() {
     document.getElementById('pr-list-content').innerHTML = prHtml;
 }
 
+// UPDATED: Render History (Now uses unique ID for buttons)
 function renderHistory() {
     const history = storage.get('workoutHistory', []).sort((a, b) => new Date(b.date) - new Date(a.date));
     
@@ -660,13 +620,14 @@ function renderHistory() {
             `;
         });
     }
-    const historyContent = document.getElementById('history-list-content');
-    if (historyContent) historyContent.innerHTML = html;
+    document.getElementById('history-list-content').innerHTML = html;
 }
 
+// UPDATED: Edit Workout (Now uses unique ID)
 function editWorkout(workoutId) {
     let history = storage.get('workoutHistory', []);
     
+    // Find the workout by its unique ID
     const indexToEdit = history.findIndex(w => w.id === workoutId);
     const workout = history[indexToEdit];
     
@@ -675,10 +636,12 @@ function editWorkout(workoutId) {
         return;
     }
 
+    // Set the date and day
     document.getElementById('workout-date').value = workout.date;
     currentDay = workout.day;
     document.getElementById('day-select').value = currentDay;
 
+    // Load the exercises into sessionData
     currentExerciseIndex = 0;
     sessionData = {};
     
@@ -688,32 +651,36 @@ function editWorkout(workoutId) {
             notes: ex.notes || ''
         };
         
+        // Copy all sets and mark them as completed
         Object.keys(ex.sets).forEach(setNum => {
             const set = ex.sets[setNum];
             sessionData[idx].sets[setNum] = {
                 weight: set.weight,
                 reps: set.reps,
                 tonnage: set.tonnage,
-                e1rm: set.e1rm || calculateE1RM(set.weight, set.reps),
                 completed: true
             };
         });
     });
 
+    // Delete the old workout from history (using the found index)
     if (indexToEdit > -1) {
         history.splice(indexToEdit, 1);
         storage.set('workoutHistory', history);
+
+        // Recalculate PRs since we removed the old workout
         recalculateAllPRs();
     }
 
-    const trackBtn = document.querySelector('.tab-btn[data-tab="track"]');
-    if (trackBtn) switchTab('track', trackBtn);
+    // Switch to track tab and render
+    switchTab('track');
 
     updateProgress();
     renderExercise();
     renderAnalytics();
 }
 
+// UPDATED: Delete Workout (Now uses unique ID)
 function deleteWorkout(workoutId) {
     if (!confirm('Are you sure you want to delete this workout? This cannot be undone.')) {
         return;
@@ -721,20 +688,24 @@ function deleteWorkout(workoutId) {
 
     let history = storage.get('workoutHistory', []);
     
+    // Find the workout by its unique ID
     const indexToDelete = history.findIndex(w => w.id === workoutId);
 
     if (indexToDelete > -1) {
         history.splice(indexToDelete, 1);
         storage.set('workoutHistory', history);
 
+        // Recalculate PRs since we deleted a workout
         recalculateAllPRs();
 
+        // Update all views
         renderHistory();
         renderCalendar();
         renderAnalytics();
         
+        // Re-render charts if on charts tab
         const chartsTab = document.getElementById('charts-tab');
-        if (chartsTab?.classList.contains('active')) {
+        if (chartsTab.classList.contains('active')) {
             renderCharts();
         }
     }
@@ -767,66 +738,25 @@ function renderCalendar() {
         html += `<div class="calendar-day ${hasWorkout ? 'workout-day' : ''} ${isToday ? 'today' : ''}">${day}</div>`;
     }
     
-    const grid = document.getElementById('calendar-grid');
-    if (grid) grid.innerHTML = html;
+    document.getElementById('calendar-grid').innerHTML = html;
 }
 
 function renderCharts() {
     const history = storage.get('workoutHistory', []);
-    const bodyWeights = storage.get('bodyWeights', []).sort((a, b) => new Date(a.date) - new Date(b.date));
     
-    // --- 1. Body Weight Chart ---
-    const weightCtx = document.getElementById('weight-chart');
-    if (weightChart) weightChart.destroy();
-
-    if (bodyWeights.length > 0 && weightCtx) {
-        weightChart = new Chart(weightCtx.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: bodyWeights.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
-                datasets: [{
-                    label: 'Body Weight (lbs)',
-                    data: bodyWeights.map(d => d.weight),
-                    borderColor: '#E87DAB', 
-                    backgroundColor: 'rgba(232, 125, 171, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#E87DAB',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false, } },
-                scales: {
-                    y: { beginAtZero: false, ticks: { color: '#64748B' } },
-                    x: { ticks: { color: '#64748B' } }
-                }
-            }
-        });
-    } else if (weightCtx) {
-        weightCtx.parentElement.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px 20px;">Log body weight on the Stats tab to see this chart.</div>';
-    }
-
-
     if (history.length === 0) {
-        const volumeChartEl = document.getElementById('volume-chart');
-        if (volumeChartEl) volumeChartEl.parentElement.innerHTML = 
+        document.getElementById('volume-chart').parentElement.innerHTML = 
             '<div style="text-align: center; color: var(--text-secondary); padding: 60px 20px;">Log workouts to see progress charts</div>';
-        const exerciseContainer = document.getElementById('exercise-charts-container');
-        if (exerciseContainer) exerciseContainer.innerHTML = '';
+        document.getElementById('exercise-charts-container').innerHTML = '';
         return;
     }
 
-    // --- 2. Workout Volume Chart ---
     const sortedHistory = history.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
     const labels = sortedHistory.map(w => new Date(w.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}));
     const data = sortedHistory.map(w => w.totalVolume);
 
     const ctx = document.getElementById('volume-chart');
-    if (!ctx) return; 
+    if (!ctx) return; // Prevent error if the tab is not initialized correctly
 
     const chartCtx = ctx.getContext('2d');
     if (volumeChart) volumeChart.destroy();
@@ -853,30 +783,50 @@ function renderCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false }
+            },
             scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1, color: '#64748B', font: { size: 11 } } },
-                x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#64748B',
+                        font: { size: 11 }
+                    },
+                    grid: {
+                        color: 'rgba(226, 232, 240, 0.5)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#64748B',
+                        maxRotation: 45,
+                        minRotation: 45,
+                        font: { size: 10 }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
 
-    // --- 3. Exercise E1RM/Tonnage Charts ---
     const exerciseData = {};
     history.forEach(w => {
         w.exercises.forEach(ex => {
             if (!exerciseData[ex.name]) exerciseData[ex.name] = [];
-            
             const bestSet = Object.values(ex.sets).reduce((best, set) => 
-                (set.e1rm || 0) > (best.e1rm || 0) ? set : best, {e1rm: 0});
-            
-            if (bestSet.e1rm > 0) {
+                set.tonnage > best.tonnage ? set : best, {tonnage: 0});
+            if (bestSet.tonnage > 0) {
+                // Check for duplicates on the same date (e.g., if user edits/resaves)
                 const existing = exerciseData[ex.name].find(d => d.date === w.date);
-                if (!existing || bestSet.e1rm > existing.e1rm) {
+                if (!existing || bestSet.tonnage > existing.tonnage) {
                     if (existing) {
-                        existing.e1rm = bestSet.e1rm;
+                        existing.tonnage = bestSet.tonnage;
                     } else {
-                        exerciseData[ex.name].push({date: w.date, e1rm: bestSet.e1rm});
+                        exerciseData[ex.name].push({date: w.date, tonnage: bestSet.tonnage});
                     }
                 }
             }
@@ -889,7 +839,7 @@ function renderCharts() {
     })).sort((a, b) => b.count - a.count).slice(0, 4);
 
     const container = document.getElementById('exercise-charts-container');
-    if (container) container.innerHTML = '';
+    container.innerHTML = '';
     exerciseCharts.forEach(c => c.destroy());
     exerciseCharts = [];
 
@@ -901,10 +851,10 @@ function renderCharts() {
         const chartDiv = document.createElement('div');
         chartDiv.className = 'chart-container';
         chartDiv.innerHTML = `
-            <div class="chart-title">${ex.name} (Estimated 1RM Trend)</div>
+            <div class="chart-title">${ex.name}</div>
             <canvas id="ex-chart-${idx}" class="chart-canvas"></canvas>
         `;
-        if (container) container.appendChild(chartDiv);
+        container.appendChild(chartDiv);
 
         const ctx = document.getElementById(`ex-chart-${idx}`);
         if (!ctx) return;
@@ -915,8 +865,8 @@ function renderCharts() {
             data: {
                 labels: exData.map(d => new Date(d.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})),
                 datasets: [{
-                    label: 'Estimated 1RM (lbs)',
-                    data: exData.map(d => d.e1rm),
+                    label: 'Best Tonnage',
+                    data: exData.map(d => d.tonnage.toFixed(0)),
                     borderColor: colors[idx],
                     backgroundColor: `${colors[idx]}15`,
                     borderWidth: 3,
@@ -932,10 +882,31 @@ function renderCharts() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: {
+                    legend: { display: false }
+                },
                 scales: {
-                    y: { beginAtZero: true, ticks: { color: '#64748B', font: { size: 11 } } },
-                    x: { ticks: { color: '#64748B', maxRotation: 45, minRotation: 45, font: { size: 10 } }, grid: { display: false } }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#64748B',
+                            font: { size: 11 }
+                        },
+                        grid: {
+                            color: 'rgba(226, 232, 240, 0.5)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#64748B',
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: { size: 10 }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
                 }
             }
         });
@@ -943,24 +914,20 @@ function renderCharts() {
     });
 }
 
+// Dark Mode Toggle
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    const icon = document.getElementById('dark-mode-icon');
-    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    document.getElementById('dark-mode-icon').textContent = isDark ? '☀️' : '🌙';
     storage.set('darkMode', isDark);
-
-    // Re-render charts to pick up new dark/light text colors
-    const chartsTab = document.getElementById('charts-tab');
-    if (chartsTab?.classList.contains('active')) {
-        renderCharts();
-    }
 }
 
+// Copy Last Workout Data
 function copyLastWorkout(exIdx, setNum) {
     const exercise = workoutData[currentDay].exercises[exIdx];
     const history = storage.get('workoutHistory', []);
     
+    // Find the most recent workout that includes this exercise
     const lastWorkout = history.filter(w => 
         w.exercises.some(e => e.name === exercise.name)
     ).sort((a, b) => new Date(b.date) - new Date(a.date))[0];
@@ -972,34 +939,23 @@ function copyLastWorkout(exIdx, setNum) {
     
     const lastEx = lastWorkout.exercises.find(e => e.name === exercise.name);
     
-    const bestSet = Object.values(lastEx.sets).reduce((best, set) => 
-        set.tonnage > best.tonnage ? set : best, {weight: 0, reps: 0});
+    // Attempt to copy the specific set number, fallback to the best set if none matches
+    let setFound = lastEx.sets[setNum];
+    if (!setFound || setFound.weight === 0) {
+        setFound = Object.values(lastEx.sets).reduce((best, set) => 
+            set.tonnage > best.tonnage ? set : best, {weight: 0, reps: 0});
+    }
 
-    if (bestSet.weight > 0) {
-        // Smart Copy Logic: Suggest +2.5 lbs progressive overload
-        const smartWeight = bestSet.weight + 2.5;
-        
-        const weightInput = document.getElementById(`weight-${exIdx}-${setNum}`);
-        const repsInput = document.getElementById(`reps-${exIdx}-${setNum}`);
-        
-        if (weightInput && repsInput) {
-             weightInput.value = smartWeight.toFixed(1);
-             repsInput.value = bestSet.reps;
-             
-             // Pass true for isWeightInput to trigger handleInput and auto-focus logic
-             handleInput(exIdx, setNum, true); 
-
-             // Stop the timer and reset it, prompting user to start their rest
-             stopTimer(); 
-             setRestTime(180);
-             updateTimerDisplay();
-        }
-
+    if (setFound && setFound.weight > 0) {
+        document.getElementById(`weight-${exIdx}-${setNum}`).value = setFound.weight;
+        document.getElementById(`reps-${exIdx}-${setNum}`).value = setFound.reps;
+        handleInput(exIdx, setNum);
     } else {
         alert('No usable data found in the last workout.');
     }
 }
 
+// Workout Rating Functions
 function setRating(rating) {
     currentWorkoutRating = rating;
     document.querySelectorAll('.star').forEach((star, idx) => {
@@ -1021,10 +977,37 @@ function toggleTag(element, tag) {
     }
 }
 
+// PR Celebration
+function checkAndCelebratePR(exercises) {
+    const prs = storage.get('personalRecords', {});
+    const newPRs = [];
+    
+    exercises.forEach(ex => {
+        Object.values(ex.sets).forEach(set => {
+            const oldPR = prs[ex.name];
+            // Check if this set is the new PR AND if a previous PR existed (to trigger celebration)
+            if (oldPR && set.tonnage > oldPR.tonnage) { 
+                newPRs.push({
+                    exercise: ex.name,
+                    oldWeight: oldPR.weight,
+                    oldReps: oldPR.reps,
+                    newWeight: set.weight,
+                    newReps: set.reps
+                });
+            }
+        });
+    });
+    
+    if (newPRs.length > 0) {
+        setTimeout(() => showPRCelebration(newPRs), 500);
+    }
+}
+
 function showPRCelebration(prs) {
     const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.add('active');
+    modal.classList.add('active');
     
+    // Confetti
     for (let i = 0; i < 60; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
@@ -1032,7 +1015,7 @@ function showPRCelebration(prs) {
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
             confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
+            modal.querySelector('.pr-celebration-content').appendChild(confetti);
             setTimeout(() => confetti.remove(), 3000);
         }, i * 15);
     }
@@ -1048,8 +1031,7 @@ function showPRCelebration(prs) {
         </div>`;
     });
     
-    const details = document.getElementById('pr-details');
-    if (details) details.innerHTML = html;
+    document.getElementById('pr-details').innerHTML = html;
     
     if ('vibrate' in navigator) {
         navigator.vibrate([200, 100, 200, 100, 400]);
@@ -1057,10 +1039,10 @@ function showPRCelebration(prs) {
 }
 
 function closePRCelebration() {
-    const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.remove('active');
+    document.getElementById('pr-celebration').classList.remove('active');
 }
 
+// Export Data
 function exportWorkoutData() {
     const history = storage.get('workoutHistory', []);
     
@@ -1069,13 +1051,14 @@ function exportWorkoutData() {
         return;
     }
     
-    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n';
+    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,Notes\n';
     
     history.forEach(workout => {
         workout.exercises.forEach(ex => {
             Object.entries(ex.sets).forEach(([setNum, set]) => {
+                // Ensure set has data before exporting
                 if (set.weight > 0 && set.reps > 0) {
-                    csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},${set.e1rm || calculateE1RM(set.weight, set.reps)},"${ex.notes || ''}"\n`;
+                    csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},"${ex.notes || ''}"\n`;
                 }
             });
         });
@@ -1092,6 +1075,7 @@ function exportWorkoutData() {
     window.URL.revokeObjectURL(url);
 }
 
+// Body Weight Logging
 function showBodyWeightLog() {
     const weights = storage.get('bodyWeights', []);
     const currentWeight = weights.length > 0 ? weights[weights.length - 1].weight : '';
@@ -1105,17 +1089,12 @@ function showBodyWeightLog() {
         });
         storage.set('bodyWeights', weights);
         alert(`Body weight logged: ${newWeight} lbs`);
-        
-        const chartsTab = document.getElementById('charts-tab');
-        if (chartsTab?.classList.contains('active')) {
-            renderCharts();
-        }
-
     } else if (newWeight !== null && newWeight.trim() !== '') {
         alert('Invalid weight entered. Please enter a positive number.');
     }
 }
 
+// Enhanced Update PRs with celebration check
 function updatePRs(exercises) {
     const prs = storage.get('personalRecords', {});
     
@@ -1123,12 +1102,7 @@ function updatePRs(exercises) {
         Object.values(ex.sets).forEach(set => {
             if (set.weight > 0 && set.reps > 0) {
                 if (!prs[ex.name] || set.tonnage > prs[ex.name].tonnage) {
-                    prs[ex.name] = {
-                        weight: set.weight, 
-                        reps: set.reps, 
-                        tonnage: set.tonnage,
-                        e1rm: set.e1rm
-                    };
+                    prs[ex.name] = {weight: set.weight, reps: set.reps, tonnage: set.tonnage};
                 }
             }
         });
@@ -1138,22 +1112,22 @@ function updatePRs(exercises) {
     checkAndCelebratePR(exercises);
 }
 
+// Recalculate all PRs from workout history
 function recalculateAllPRs() {
     const history = storage.get('workoutHistory', []);
     const prs = {};
     
+    // Go through all workouts and find the best performance for each exercise
     history.forEach(workout => {
         workout.exercises.forEach(ex => {
             Object.values(ex.sets).forEach(set => {
                 if (set.weight > 0 && set.reps > 0) {
-                    const tonnage = set.tonnage || (set.weight * set.reps); 
-                    const e1rm = set.e1rm || calculateE1RM(set.weight, set.reps);
+                    const tonnage = set.tonnage || (set.weight * set.reps); // Use stored tonnage or recalculate
                     if (!prs[ex.name] || tonnage > prs[ex.name].tonnage) {
                         prs[ex.name] = {
                             weight: set.weight, 
                             reps: set.reps, 
-                            tonnage: tonnage,
-                            e1rm: e1rm
+                            tonnage: tonnage
                         };
                     }
                 }
