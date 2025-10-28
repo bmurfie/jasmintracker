@@ -61,8 +61,7 @@ let weightChart = null;
 let exerciseCharts = [];
 let currentWorkoutRating = 0;
 let currentWorkoutTags = [];
-let sessionDurationSeconds = 0; 
-let sessionDurationInterval = null; 
+// REMOVED: sessionDurationSeconds, sessionDurationInterval state variables
 
 // Utility Functions
 
@@ -111,37 +110,9 @@ function autoAdvanceFocus(exIdx, setNum, isWeight) {
     document.getElementById(`weight-${exIdx}-${nextSetNum}`)?.focus();
 }
 
-// QoL: Session Duration Timer Logic
-function updateSessionDurationDisplay() {
-    const hours = Math.floor(sessionDurationSeconds / 3600);
-    const minutes = Math.floor((sessionDurationSeconds % 3600) / 60);
-    const seconds = sessionDurationSeconds % 60;
-
-    const display = 
-        `${String(hours).padStart(2, '0')}:` +
-        `${String(minutes).padStart(2, '0')}:` +
-        `${String(seconds).padStart(2, '0')}`;
-    
-    const displayElement = document.getElementById('session-timer-display');
-    if (displayElement) displayElement.textContent = display;
-}
-
-function startSessionTimer() {
-    if (sessionDurationInterval) clearInterval(sessionDurationInterval);
-    
-    sessionDurationInterval = setInterval(() => {
-        sessionDurationSeconds++;
-        updateSessionDurationDisplay();
-    }, 1000);
-    
-    document.querySelector('.app-header')?.classList.add('session-running');
-}
-
-function stopSessionTimer() {
-    if (sessionDurationInterval) clearInterval(sessionDurationInterval);
-    sessionDurationInterval = null;
-    document.querySelector('.app-header')?.classList.remove('session-running');
-}
+// REMOVED: updateSessionDurationDisplay()
+// REMOVED: startSessionTimer()
+// REMOVED: stopSessionTimer()
 
 // Centralized Event Listener Setup
 function setupEventListeners() {
@@ -355,7 +326,6 @@ function handleInput(exIdx, setNum, isWeightInput) {
     const tonnage = weight * reps;
     const e1rm = calculateE1RM(weight, reps);
 
-    // QoL #4: Live PR Check
     if (prAlertEl) prAlertEl.innerHTML = '';
     if (weight > 0 && reps > 0) {
         const prs = storage.get('personalRecords', {});
@@ -368,13 +338,7 @@ function handleInput(exIdx, setNum, isWeightInput) {
         sessionData[exIdx].sets[setNum] = {weight, reps, tonnage, e1rm, completed: false};
         autoAdvanceFocus(exIdx, setNum, isWeightInput);
         
-        // QoL #1: Start Session Duration Timer if this is the first set logged
-        const totalLoggedSets = Object.keys(sessionData).flatMap(key => Object.keys(sessionData[key].sets)).length;
-        if (totalLoggedSets === 1 && !sessionDurationInterval) {
-            startSessionTimer();
-        }
     } else {
-        // QoL #3: Explicitly delete the set entry if both inputs are cleared
         if (sessionData[exIdx].sets[setNum]) {
             delete sessionData[exIdx].sets[setNum];
         }
@@ -406,7 +370,6 @@ function nextExercise() {
         currentExerciseIndex++;
         renderExercise();
         
-        // Auto-start timer after completing an exercise
         if (anySetLogged) {
             stopTimer(); 
             setRestTime(180); 
@@ -466,10 +429,6 @@ function updateProgress() {
 }
 
 function saveWorkout() {
-    stopSessionTimer();
-    const finalDuration = document.getElementById('session-timer-display').textContent;
-    sessionDurationSeconds = 0;
-    updateSessionDurationDisplay(); 
     
     const workout = workoutData[currentDay];
     const date = document.getElementById('workout-date').value;
@@ -500,7 +459,7 @@ function saveWorkout() {
         exercises,
         totalVolume: totalSets,
         totalTonnage: totalTonnage,
-        duration: finalDuration, // Save final duration
+        // Removed duration property and related calls
         rating: 0,
         tags: []
     };
@@ -546,8 +505,7 @@ function showCompletionModal(workout) {
             <div class="completion-stat"><strong>${workout.exercises.length}</strong> exercises completed</div>
             <div class="completion-stat"><strong>${workout.totalTonnage.toFixed(0)}</strong> lbs total volume</div>
             <div class="completion-stat">Workout: <strong>${workout.name}</strong></div>
-            <div class="completion-stat">Duration: <strong>${workout.duration}</strong></div>
-        `;
+            `;
     }
     
     document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
@@ -597,17 +555,33 @@ function toggleTimer() {
     }
 }
 
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    const icon = document.getElementById('dark-mode-icon');
-    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-    storage.set('darkMode', isDark);
+function startTimer() {
+    timerRunning = true;
+    document.getElementById('timer-start-btn').textContent = 'Pause';
+    document.querySelector('.timer-display')?.classList.add('running');
+    document.querySelector('.floating-timer')?.classList.add('running');
 
-    const chartsTab = document.getElementById('charts-tab');
-    if (chartsTab?.classList.contains('active')) {
-        renderCharts();
-    }
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+
+        if (timerSeconds <= 0) {
+            stopTimer();
+            alert('Rest period complete!');
+            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 400]); 
+            timerSeconds = 180; 
+            setRestTime(180);
+            updateTimerDisplay();
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById('timer-start-btn').textContent = 'Start';
+    document.querySelector('.timer-display')?.classList.remove('running');
+    document.querySelector('.floating-timer')?.classList.remove('running');
 }
 
 function updateTimerDisplay() {
@@ -621,20 +595,232 @@ function updateTimerDisplay() {
     if (floatIcon) floatIcon.textContent = timerRunning ? display : '⏱️';
 }
 
-// QoL: Chart Fix is implemented in this function
+function switchTab(tab, clickedButton) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    if (clickedButton) clickedButton.classList.add('active');
+
+    const tabContent = document.getElementById(`${tab}-tab`);
+    if (tabContent) tabContent.classList.add('active');
+
+    if (tab === 'stats') renderAnalytics();
+    if (tab === 'history') {
+        renderHistory();
+        renderCalendar();
+    }
+    if (tab === 'charts') renderCharts();
+}
+
+function renderAnalytics() {
+    const history = storage.get('workoutHistory', []);
+    const prs = storage.get('personalRecords', {});
+
+    document.getElementById('total-workouts').textContent = history.length;
+    document.getElementById('total-sets').textContent = history.reduce((sum, w) => sum + w.totalVolume, 0);
+    document.getElementById('prs-count').textContent = Object.keys(prs).length;
+
+    const sortedDates = history.map(w => new Date(w.date)).sort((a, b) => b - a);
+    let streak = 0;
+    if (sortedDates.length > 0) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let checkDate = new Date(sortedDates[0]);
+        checkDate.setHours(0, 0, 0, 0);
+        
+        const dayInMillis = 86400000;
+
+        if (checkDate.getTime() === today.getTime() || checkDate.getTime() === today.getTime() - dayInMillis) {
+            streak = 1;
+            let lastCheckedTime = checkDate.getTime();
+            
+            for (let i = 1; i < sortedDates.length; i++) {
+                const prevDate = new Date(sortedDates[i]);
+                prevDate.setHours(0, 0, 0, 0);
+                const prevTime = prevDate.getTime();
+
+                if (prevTime === lastCheckedTime) continue;
+                
+                if (lastCheckedTime - prevTime === dayInMillis) {
+                    streak++;
+                    lastCheckedTime = prevTime;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    document.getElementById('current-streak').textContent = streak;
+
+    const prEntries = Object.entries(prs).sort((a, b) => b[1].tonnage - a[1].tonnage);
+    let prHtml = '';
+    if (prEntries.length === 0) {
+        prHtml = '<div style="text-align: center; color: var(--text-secondary); padding: 24px;">No personal records yet</div>';
+    } else {
+        prEntries.forEach(([name, pr]) => {
+            prHtml += `
+                <div class="pr-item">
+                    <div class="pr-exercise">${name}</div>
+                    <div class="pr-stats">${pr.weight} × ${pr.reps}</div>
+                </div>
+            `;
+        });
+    }
+    document.getElementById('pr-list-content').innerHTML = prHtml;
+}
+
+function renderHistory() {
+    const history = storage.get('workoutHistory', []).sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    let html = '';
+    if (history.length === 0) {
+        html = '<div style="text-align: center; color: var(--text-secondary); padding: 24px;">No workouts logged yet</div>';
+    } else {
+        history.slice(0, 20).forEach((w) => {
+            
+            html += `
+                <div class="history-item">
+                    <div class="history-header">
+                        <div class="history-date">${new Date(w.date).toLocaleDateString()}</div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <div class="history-sets">${w.totalVolume} sets</div>
+                            <button onclick="editWorkout(${w.id})" style="background: var(--primary-blue); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Edit</button>
+                            <button onclick="deleteWorkout(${w.id})" style="background: var(--error); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Delete</button>
+                        </div>
+                    </div>
+                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 6px;">${w.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                        ${w.exercises.map(e => e.name).join(', ')}
+                    </div>
+                </div>
+            `;
+        });
+    }
+    const historyContent = document.getElementById('history-list-content');
+    if (historyContent) historyContent.innerHTML = html;
+}
+
+function editWorkout(workoutId) {
+    let history = storage.get('workoutHistory', []);
+    
+    const indexToEdit = history.findIndex(w => w.id === workoutId);
+    const workout = history[indexToEdit];
+    
+    if (!workout) {
+        alert('Workout not found');
+        return;
+    }
+
+    document.getElementById('workout-date').value = workout.date;
+    currentDay = workout.day;
+    document.getElementById('day-select').value = currentDay;
+
+    currentExerciseIndex = 0;
+    sessionData = {};
+    
+    workout.exercises.forEach((ex, idx) => {
+        sessionData[idx] = {
+            sets: {},
+            notes: ex.notes || ''
+        };
+        
+        Object.keys(ex.sets).forEach(setNum => {
+            const set = ex.sets[setNum];
+            sessionData[idx].sets[setNum] = {
+                weight: set.weight,
+                reps: set.reps,
+                tonnage: set.tonnage,
+                e1rm: set.e1rm || calculateE1RM(set.weight, set.reps),
+                completed: true
+            };
+        });
+    });
+
+    if (indexToEdit > -1) {
+        history.splice(indexToEdit, 1);
+        storage.set('workoutHistory', history);
+        recalculateAllPRs();
+    }
+
+    const trackBtn = document.querySelector('.tab-btn[data-tab="track"]');
+    if (trackBtn) switchTab('track', trackBtn);
+
+    updateProgress();
+    renderExercise();
+    renderAnalytics();
+}
+
+function deleteWorkout(workoutId) {
+    if (!confirm('Are you sure you want to delete this workout? This cannot be undone.')) {
+        return;
+    }
+
+    let history = storage.get('workoutHistory', []);
+    
+    const indexToDelete = history.findIndex(w => w.id === workoutId);
+
+    if (indexToDelete > -1) {
+        history.splice(indexToDelete, 1);
+        storage.set('workoutHistory', history);
+
+        recalculateAllPRs();
+
+        renderHistory();
+        renderCalendar();
+        renderAnalytics();
+        
+        const chartsTab = document.getElementById('charts-tab');
+        if (chartsTab?.classList.contains('active')) {
+            renderCharts();
+        }
+    }
+}
+
+function renderCalendar() {
+    const history = storage.get('workoutHistory', []);
+    const workoutDates = new Set(history.map(w => w.date));
+    
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    let html = '';
+    
+    ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
+        html += `<div style="text-align: center; font-weight: 700; color: var(--text-secondary); padding: 6px; font-size: 0.75rem;">${d}</div>`;
+    });
+    
+    for (let i = 0; i < firstDay.getDay(); i++) {
+        html += '<div></div>';
+    }
+    
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+        const date = new Date(today.getFullYear(), today.getMonth(), day);
+        const dateStr = date.toISOString().split('T')[0];
+        const isToday = day === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+        const hasWorkout = workoutDates.has(dateStr);
+        
+        html += `<div class="calendar-day ${hasWorkout ? 'workout-day' : ''} ${isToday ? 'today' : ''}">${day}</div>`;
+    }
+    
+    const grid = document.getElementById('calendar-grid');
+    if (grid) grid.innerHTML = html;
+}
+
 function renderCharts() {
     const history = storage.get('workoutHistory', []);
     const bodyWeights = storage.get('bodyWeights', []).sort((a, b) => new Date(a.date) - new Date(b.date));
     
-    // Helper to gracefully show placeholder or canvas
+    // Helper to draw or hide charts/placeholders
     function manageChartContainer(canvasId, title, hasData) {
-        let canvas = document.getElementById(canvasId);
-        const container = canvas ? canvas.parentElement : null;
-        let placeholder = container?.querySelector('.chart-placeholder');
+        const containerId = `${canvasId}-container`;
+        const container = document.getElementById(containerId);
+        const canvas = document.getElementById(canvasId);
         
-        if (!container) return null;
+        if (!container || !canvas) return null;
 
-        // If placeholder doesn't exist, create it inside the container
+        // Check for placeholder, create if missing (ensuring robustness)
+        let placeholder = container.querySelector('.chart-placeholder');
         if (!placeholder) {
             placeholder = document.createElement('div');
             placeholder.className = 'chart-placeholder';
@@ -642,20 +828,11 @@ function renderCharts() {
             container.appendChild(placeholder);
         }
 
-        // Handle destructive scenario where canvas might be removed
-        if (!canvas) {
-            // Re-create canvas if removed
-            const newCanvas = document.createElement('canvas');
-            newCanvas.id = canvasId;
-            newCanvas.className = 'chart-canvas';
-            container.appendChild(newCanvas);
-            canvas = newCanvas;
-        }
-
         if (hasData) {
             placeholder.style.display = 'none';
             canvas.style.display = 'block';
         } else {
+            placeholder.textContent = `Log ${title.toLowerCase().replace(' trend', '')} to see this chart.`;
             placeholder.style.display = 'block';
             canvas.style.display = 'none';
         }
@@ -663,11 +840,16 @@ function renderCharts() {
         return { canvas, placeholder };
     }
     
+    // Destroy previous charts to free memory
+    if (weightChart) weightChart.destroy();
+    if (volumeChart) volumeChart.destroy();
+    exerciseCharts.forEach(c => c.destroy());
+    exerciseCharts = [];
+
+
     // --- 1. Body Weight Chart ---
     const weightElements = manageChartContainer('weight-chart', 'Body Weight Trend', bodyWeights.length > 0);
-    if (weightChart) weightChart.destroy();
-    
-    if (bodyWeights.length > 0 && weightElements.canvas) {
+    if (bodyWeights.length > 0 && weightElements?.canvas) {
         weightChart = new Chart(weightElements.canvas.getContext('2d'), { 
             type: 'line',
             data: {
@@ -698,20 +880,16 @@ function renderCharts() {
 
     // --- 2. Workout Volume Chart ---
     const volumeElements = manageChartContainer('volume-chart', 'Workout Volume Trend', history.length > 0);
-    if (volumeChart) volumeChart.destroy();
-
     const exerciseContainer = document.getElementById('exercise-charts-container');
     if (exerciseContainer) exerciseContainer.innerHTML = '';
-    exerciseCharts.forEach(c => c.destroy());
-    exerciseCharts = [];
+
 
     if (history.length === 0) {
-        volumeElements.placeholder.textContent = 'Log workouts to see progress charts';
         return;
     }
     
     // --- 3. Draw Volume Chart (Only runs if history.length > 0) ---
-    if (volumeElements.canvas) {
+    if (volumeElements?.canvas) {
         const sortedHistory = history.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
         const labels = sortedHistory.map(w => new Date(w.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'}));
         const data = sortedHistory.map(w => w.totalVolume);
@@ -838,18 +1016,6 @@ function movePlanItem(dayKey, exIndex, direction) {
     }
 }
 
-function movePlanItem(dayKey, exIndex, direction) {
-    const list = workoutData[dayKey].exercises;
-    const newIndex = exIndex + direction;
-
-    if (newIndex >= 0 && newIndex < list.length) {
-        const item = list[exIndex];
-        list.splice(exIndex, 1);
-        list.splice(newIndex, 0, item);
-        renderPlanTab();
-    }
-}
-
 function deletePlanItem(dayKey, exIndex) {
     if (confirm(`Are you sure you want to delete ${workoutData[dayKey].exercises[exIndex].name}?`)) {
         workoutData[dayKey].exercises.splice(exIndex, 1);
@@ -919,6 +1085,122 @@ function renderPlanTab() {
     planContainer.innerHTML = html;
 }
 
+function setRating(rating) {
+    currentWorkoutRating = rating;
+    document.querySelectorAll('.star').forEach((star, idx) => {
+        if (idx < rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function toggleTag(element, tag) {
+    element.classList.toggle('active');
+    const idx = currentWorkoutTags.indexOf(tag);
+    if (idx > -1) {
+        currentWorkoutTags.splice(idx, 1);
+    } else {
+        currentWorkoutTags.push(tag);
+    }
+}
+
+function showPRCelebration(prs) {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.add('active');
+
+    for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 15);
+    }
+    
+    let html = '';
+    prs.forEach(pr => {
+        html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
+            <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
+            <div style="font-size: 0.938rem; color: var(--text-secondary);">
+                Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
+                <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
+            </div>
+        </div>`;
+    });
+    
+    const details = document.getElementById('pr-details');
+    if (details) details.innerHTML = html;
+    
+    if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+}
+
+function closePRCelebration() {
+    const modal = document.getElementById('pr-celebration');
+    if (modal) modal.classList.remove('active');
+}
+
+function exportWorkoutData() {
+    const history = storage.get('workoutHistory', []);
+    
+    if (history.length === 0) {
+        alert('No workout data to export yet!');
+        return;
+    }
+    
+    let csv = 'Date,Workout,Exercise,Set,Weight,Reps,Tonnage,E1RM,Notes\n';
+    
+    history.forEach(workout => {
+        workout.exercises.forEach(ex => {
+            Object.entries(ex.sets).forEach(([setNum, set]) => {
+                if (set.weight > 0 && set.reps > 0) {
+                    csv += `${workout.date},"${workout.name}","${ex.name}",${setNum},${set.weight},${set.reps},${set.tonnage},${set.e1rm || calculateE1RM(set.weight, set.reps)},"${ex.notes || ''}"\n`;
+                }
+            });
+        });
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `jasmin-workouts-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+function showBodyWeightLog() {
+    const weights = storage.get('bodyWeights', []);
+    const currentWeight = weights.length > 0 ? weights[weights.length - 1].weight : '';
+    
+    const newWeight = prompt('Enter your current body weight (lbs):', currentWeight);
+    
+    if (newWeight !== null && newWeight.trim() !== '' && !isNaN(newWeight) && parseFloat(newWeight) > 0) {
+        weights.push({
+            date: new Date().toISOString().split('T')[0],
+            weight: parseFloat(newWeight)
+        });
+        storage.set('bodyWeights', weights);
+        alert(`Body weight logged: ${newWeight} lbs`);
+        
+        const chartsTab = document.getElementById('charts-tab');
+        if (chartsTab?.classList.contains('active')) {
+            renderCharts();
+        }
+
+    } else if (newWeight !== null && newWeight.trim() !== '') {
+        alert('Invalid weight entered. Please enter a positive number.');
+    }
+}
+
 function updatePRs(exercises) {
     const prs = storage.get('personalRecords', {});
     
@@ -965,70 +1247,6 @@ function recalculateAllPRs() {
     });
     
     storage.set('personalRecords', prs);
-}
-
-function checkAndCelebratePR(exercises) {
-    const prs = storage.get('personalRecords', {});
-    const newPRs = [];
-    
-    exercises.forEach(ex => {
-        Object.values(ex.sets).forEach(set => {
-            const oldPR = prs[ex.name];
-            if (oldPR && set.tonnage > oldPR.tonnage) { 
-                newPRs.push({
-                    exercise: ex.name,
-                    oldWeight: oldPR.weight,
-                    oldReps: oldPR.reps,
-                    newWeight: set.weight,
-                    newReps: set.reps
-                });
-            }
-        });
-    });
-    
-    if (newPRs.length > 0) {
-        setTimeout(() => showPRCelebration(newPRs), 500);
-    }
-}
-
-function showPRCelebration(prs) {
-    const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.add('active');
-
-    for (let i = 0; i < 60; i++) {
-        setTimeout(() => {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.background = ['#10B981', '#FBBF24', '#4A90E2', '#E87DAB'][Math.floor(Math.random() * 4)];
-            confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            modal?.querySelector('.pr-celebration-content')?.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 3000);
-        }, i * 15);
-    }
-    
-    let html = '';
-    prs.forEach(pr => {
-        html += `<div style="margin: 16px 0; padding: 16px; background: var(--bg-light); border-radius: 12px;">
-            <div style="font-weight: 700; color: var(--success); margin-bottom: 8px;">${pr.exercise}</div>
-            <div style="font-size: 0.938rem; color: var(--text-secondary);">
-                Previous: ${pr.oldWeight} × ${pr.oldReps}<br>
-                <strong style="color: var(--success);">New PR: ${pr.newWeight} × ${pr.newReps}!</strong>
-            </div>
-        </div>`;
-    });
-    
-    const details = document.getElementById('pr-details');
-    if (details) details.innerHTML = html;
-    
-    if ('vibrate' in navigator) {
-        navigator.vibrate([200, 100, 200, 100, 400]);
-    }
-}
-
-function closePRCelebration() {
-    const modal = document.getElementById('pr-celebration');
-    if (modal) modal.classList.remove('active');
 }
 
 document.addEventListener('DOMContentLoaded', init);
